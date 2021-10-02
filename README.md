@@ -13,14 +13,11 @@ You must have rust and cargo installed and available on the path.
 
 #### Setup
 1. Run `git clone https://github.com/ellygaytor/Sedum.git`
-2. Create a folder in the directory you cloned to called `source`
-3. Prepend the appropriate yaml to your markdown files:
+2. Prepend the appropriate yaml to your markdown files:
   - `title`
   - `description`
   - `language`
   - `author`
-4. Move your markdown files into `source`
 
 #### Generation
-1. Run `cargo run` in the parent folder of `source`
-2. Move the contents of `result` to the appropriate location
+1. Run `cargo run [source] [target]`, setting the source directory and the directory you want the generated files to be placed in
