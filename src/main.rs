@@ -1,10 +1,11 @@
-use extract_frontmatter::Extractor;
-use pulldown_cmark::{html, Options, Parser};
-use serde::Deserialize;
 use std::fs;
 use std::fs::File;
 use std::io::Write;
 use std::path::Path;
+
+use extract_frontmatter::Extractor;
+use pulldown_cmark::{html, Options, Parser};
+use serde::Deserialize;
 use walkdir::WalkDir;
 
 #[derive(Deserialize, Debug)]
@@ -43,7 +44,7 @@ fn main() {
                     fs::read_to_string("source/head.include").unwrap_or_default();
                 let body_include: String =
                     fs::read_to_string("source/body.include").unwrap_or_default();
-                let page = format!("<!DOCTYPE html>\n<html lang='{}'>{}<head>\n<meta charset='utf-8'>\n<title>{}</title>\n<meta name='description' content='{}'>\n<meta name='author' content='{}'>\n<meta name='viewport' content='width=device-width, initial-scale=1'>\n<link rel='stylesheet' href='/main.css'>\n</head>\n<body>\n{}\n{}</body>\n</html>",settings.language,head_include,settings.title,settings.description,settings.author,html_content,body_include);
+                let page = format!("<!DOCTYPE html>\n<html lang='{}'>{}<head>\n<meta charset='utf-8'>\n<title>{}</title>\n<meta name='description' content='{}'>\n<meta name='author' content='{}'>\n<meta name='viewport' content='width=device-width, initial-scale=1'>\n<link rel='stylesheet' href='/main.css'>\n</head>\n<body>\n{}\n{}</body>\n</html>", settings.language, head_include, settings.title, settings.description, settings.author, html_content, body_include);
                 let prefix = &target.parent().unwrap();
                 std::fs::create_dir_all(prefix).unwrap();
                 target.set_extension("html");
