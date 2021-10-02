@@ -25,7 +25,7 @@ fn main() {
     let args: Vec<String> = env::args().collect();
 
     let (source, destination) = parse_config(&args);
-    
+
 
     for entry in WalkDir::new("source").into_iter().filter_map(|e| e.ok()) {
         if entry.metadata().unwrap().is_file() {
@@ -53,14 +53,12 @@ fn main() {
                 target.set_extension("html");
                 let mut target_file = File::create(target).expect("Unable to create.");
                 write!(&mut target_file, "{}", page).expect("Could not write to target file.");
-            } else {
-                if entry.path().extension().unwrap() != "include" {
-                    let relative = &entry.path().strip_prefix(source).expect("Not a prefix");
-                    let target = destination.join(relative);
-                    let prefix = &target.parent().unwrap();
-                    std::fs::create_dir_all(prefix).unwrap();
-                    fs::copy(entry.path(), target).expect("Could not copy file");
-                }
+            } else if entry.path().extension().unwrap() != "include" {
+                let relative = &entry.path().strip_prefix(source).expect("Not a prefix");
+                let target = destination.join(relative);
+                let prefix = &target.parent().unwrap();
+                std::fs::create_dir_all(prefix).unwrap();
+                fs::copy(entry.path(), target).expect("Could not copy file");
             }
         }
     }
