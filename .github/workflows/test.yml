@@ -47,3 +47,8 @@ jobs:
           check_name: Test Results
           github_token: ${{ secrets.GITHUB_TOKEN }}
           files: results.xml
+      - name: Upload to CodeCov
+        uses: codecov/codecov-action@v1
+        with:
+          files: ./lcov.info
+          fail_ci_if_error: true
