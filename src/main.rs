@@ -3,6 +3,7 @@ use std::fs;
 use std::fs::File;
 use std::io::Write;
 use std::path::Path;
+use std::path::PathBuf;
 
 use extract_frontmatter::Extractor;
 use pulldown_cmark::{html, Options, Parser};
@@ -27,7 +28,7 @@ fn main() {
     let (source, destination) = parse_config(&args);
 
 
-    for entry in WalkDir::new("source").into_iter().filter_map(|e| e.ok()) {
+    for entry in WalkDir::new(source).into_iter().filter_map(|e| e.ok()) {
         if entry.metadata().unwrap().is_file() {
             if entry.path().extension().unwrap() == "md" {
                 let relative = entry.path().strip_prefix(source).expect("Not a prefix");
@@ -43,10 +44,14 @@ fn main() {
                 let parser = Parser::new_ext(content, pulldown_cmark_options);
                 let mut html_content = String::new();
                 html::push_html(&mut html_content, parser);
+                let mut head_include_path = PathBuf::from(source);
+                head_include_path.push("head.include");
                 let head_include: String =
-                    fs::read_to_string("source/head.include").unwrap_or_default();
+                    fs::read_to_string(head_include_path).unwrap_or_default();
+                let mut body_include_path = PathBuf::from(source);
+                body_include_path.push("body.include");
                 let body_include: String =
-                    fs::read_to_string("source/body.include").unwrap_or_default();
+                    fs::read_to_string(body_include_path).unwrap_or_default();
                 let page = format!("<!DOCTYPE html>\n<html lang='{}'>{}<head>\n<meta charset='utf-8'>\n<title>{}</title>\n<meta name='description' content='{}'>\n<meta name='author' content='{}'>\n<meta name='viewport' content='width=device-width, initial-scale=1'>\n<link rel='stylesheet' href='/main.css'>\n</head>\n<body>\n{}\n{}</body>\n</html>", settings.language, head_include, settings.title, settings.description, settings.author, html_content, body_include);
                 let prefix = &target.parent().unwrap();
                 std::fs::create_dir_all(prefix).unwrap();
