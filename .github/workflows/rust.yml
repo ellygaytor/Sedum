@@ -16,11 +16,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Build
-      run: cargo build --verbose
     - name: Check
       run: cargo check
-    - name: Run clippy
-      run: cargo clippy
     - name: Run tests
       run: cargo test --verbose
