@@ -13,7 +13,6 @@ struct Page {
     description: String,
     language: String,
     author: String,
-    list: String,
 }
 
 fn main() {
