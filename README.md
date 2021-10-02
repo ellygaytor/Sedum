@@ -2,7 +2,7 @@
 
 Sedum is a static site generator written in Rust. It can be used locally or with a service like Netlify to generate websites on the fly.
 
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ellygaytor/Sedum/Rust)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ellygaytor/Sedum/Rust) [![codecov](https://codecov.io/gh/ellygaytor/Sedum/branch/main/graph/badge.svg?token=7QNP00NYOC)](https://codecov.io/gh/ellygaytor/Sedum)
 
 ## Usage
 
