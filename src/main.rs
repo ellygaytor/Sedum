@@ -1,3 +1,4 @@
+use std::env;
 use std::fs;
 use std::fs::File;
 use std::io::Write;
@@ -21,14 +22,16 @@ fn main() {
     pulldown_cmark_options.insert(Options::ENABLE_STRIKETHROUGH);
     pulldown_cmark_options.insert(Options::ENABLE_TABLES);
 
-    let src = Path::new("source/");
-    let dst = Path::new("result/");
+    let args: Vec<String> = env::args().collect();
+
+    let (source, destination) = parse_config(&args);
+    
 
     for entry in WalkDir::new("source").into_iter().filter_map(|e| e.ok()) {
         if entry.metadata().unwrap().is_file() {
             if entry.path().extension().unwrap() == "md" {
-                let relative = entry.path().strip_prefix(src).expect("Not a prefix");
-                let mut target = dst.join(relative);
+                let relative = entry.path().strip_prefix(source).expect("Not a prefix");
+                let mut target = destination.join(relative);
                 let contents = fs::read_to_string(entry.path())
                     .expect("There was an error reading the markdown file.");
                 let mut extractor = Extractor::new(&contents);
@@ -52,8 +55,8 @@ fn main() {
                 write!(&mut target_file, "{}", page).expect("Could not write to target file.");
             } else {
                 if entry.path().extension().unwrap() != "include" {
-                    let relative = &entry.path().strip_prefix(src).expect("Not a prefix");
-                    let target = dst.join(relative);
+                    let relative = &entry.path().strip_prefix(source).expect("Not a prefix");
+                    let target = destination.join(relative);
                     let prefix = &target.parent().unwrap();
                     std::fs::create_dir_all(prefix).unwrap();
                     fs::copy(entry.path(), target).expect("Could not copy file");
@@ -61,4 +64,11 @@ fn main() {
             }
         }
     }
+}
+
+fn parse_config(args: &[String]) -> (&Path, &Path) {
+    let source = Path::new(&args[1]);
+    let destination = Path::new(&args[2]);
+
+    (source, destination)
 }
