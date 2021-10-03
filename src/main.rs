@@ -44,8 +44,8 @@ fn main() {
         }
     }
 
-    let mut list_html = "<ul>";
-    for source_file in source_files {
+    let mut list_html = String::from("<ul>");
+    for source_file in &source_files {
         let relative = source_file.strip_prefix(source).expect("Not a prefix");
         let contents = fs::read_to_string(source_file)
             .expect("There was an error reading the markdown file.");
@@ -53,15 +53,14 @@ fn main() {
         extractor.select_by_terminator("---");
         extractor.strip_prefix("---");
         let settings_yaml: String = extractor.extract();
-        let content: &str = extractor.remove().trim();
         let settings = serde_yaml::from_str::<Page>(&settings_yaml).unwrap();
         if settings.list == "True" {
-            list_html = format!("{}<li><a href='{}'>{}</a></li>", list_html, relative.display(), settings.title)
+            list_html = format!("{}<li><a href='{}'>{}</a></li>", list_html, relative.display(), settings.title);
         }
     }
     list_html = format!("{}</ul>", list_html);
 
-    for source_file in source_files {
+    for source_file in &source_files {
         let relative = source_file.strip_prefix(source).expect("Not a prefix");
         let mut target = destination.join(relative);
         let contents = fs::read_to_string(source_file)
@@ -82,6 +81,7 @@ fn main() {
         body_include_path.push("body.include");
         let body_include: String = fs::read_to_string(body_include_path).unwrap_or_default();
         let page = format!("<!DOCTYPE html>\n<html lang='{}'>{}<head>\n<meta charset='utf-8'>\n<title>{}</title>\n<meta name='description' content='{}'>\n<meta name='author' content='{}'>\n<meta name='viewport' content='width=device-width, initial-scale=1'>\n<link rel='stylesheet' href='/main.css'>\n</head>\n<body>\n{}\n{}</body>\n</html>", settings.language, head_include, settings.title, settings.description, settings.author, html_content, body_include);
+        let page = str::replace(&page, "#LIST#", &list_html);
         let prefix = &target.parent().unwrap();
         std::fs::create_dir_all(prefix).unwrap();
         target.set_extension("html");
@@ -96,3 +96,4 @@ fn parse_config(args: &[String]) -> (&Path, &Path) {
 
     (source, destination)
 }
+
