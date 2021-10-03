@@ -43,9 +43,9 @@ fn main() {
                 let settings = serde_yaml::from_str::<Page>(&settings_yaml).unwrap();
                 let parser = Parser::new_ext(content, pulldown_cmark_options);
                 let mut html_content = String::new();
-                html::push_html(&mut html_content, parser);
-                let mut head_include_path = PathBuf::from(source);
-                head_include_path.push("head.include");
+                html::push_html(&mut html_content, parser); 
+                let mut head_include_path = PathBuf::from(source); 
+                head_include_path.push("head.include"); 
                 let head_include: String =
                     fs::read_to_string(head_include_path).unwrap_or_default();
                 let mut body_include_path = PathBuf::from(source);
