@@ -16,6 +16,7 @@ struct Page {
     description: String,
     language: String,
     author: String,
+    list: String
 }
 
 fn main() {
@@ -42,6 +43,23 @@ fn main() {
             }
         }
     }
+
+    let mut list_html = "<ul>";
+    for source_file in source_files {
+        let relative = source_file.strip_prefix(source).expect("Not a prefix");
+        let contents = fs::read_to_string(source_file)
+            .expect("There was an error reading the markdown file.");
+        let mut extractor = Extractor::new(&contents);
+        extractor.select_by_terminator("---");
+        extractor.strip_prefix("---");
+        let settings_yaml: String = extractor.extract();
+        let content: &str = extractor.remove().trim();
+        let settings = serde_yaml::from_str::<Page>(&settings_yaml).unwrap();
+        if settings.list == "True" {
+            list_html = format!("{}<li><a href='{}'>{}</a></li>", list_html, relative.display(), settings.title)
+        }
+    }
+    list_html = format!("{}</ul>", list_html);
 
     for source_file in source_files {
         let relative = source_file.strip_prefix(source).expect("Not a prefix");
