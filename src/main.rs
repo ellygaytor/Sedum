@@ -61,6 +61,9 @@ fn main() {
     }
     list_html = format!("{}</ul>", list_html);
 
+    let head_include = create_include("head");
+    let body_include = create_include("body");
+
     for source_file in &source_files {
         let relative = source_file.strip_prefix(source).expect("Not a prefix");
         let mut target = destination.join(relative);
@@ -75,8 +78,6 @@ fn main() {
         let parser = Parser::new_ext(content, pulldown_cmark_options);
         let mut html_content = String::new();
         html::push_html(&mut html_content, parser);
-        let head_include = create_include("head");
-        let body_include = create_include("body");
         let page = format!("<!DOCTYPE html>\n<html lang='{}'>{}<head>\n<meta charset='utf-8'>\n<title>{}</title>\n<meta name='description' content='{}'>\n<meta name='author' content='{}'>\n<meta name='viewport' content='width=device-width, initial-scale=1'>\n<link rel='stylesheet' href='/main.css'>\n</head>\n<body>\n{}\n{}</body>\n</html>", settings.language, head_include, settings.title, settings.description, settings.author, html_content, body_include);
         let page = str::replace(&page, "|LIST|", &list_html);
         let prefix = &target.parent().unwrap();
