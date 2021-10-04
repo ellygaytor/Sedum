@@ -1,9 +1,9 @@
-use std::env;
-use std::fs;
-use std::fs::File;
-use std::io::Write;
-use std::path::Path;
-use std::path::PathBuf;
+use std::{
+    env, 
+    fs::{self, File}, 
+    io::Write, 
+    path::{Path, PathBuf},
+  };
 
 use extract_frontmatter::Extractor;
 use pulldown_cmark::{html, Options, Parser};
