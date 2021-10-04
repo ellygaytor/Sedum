@@ -75,12 +75,8 @@ fn main() {
         let parser = Parser::new_ext(content, pulldown_cmark_options);
         let mut html_content = String::new();
         html::push_html(&mut html_content, parser);
-        let mut head_include_path = PathBuf::from(source);
-        head_include_path.push("head.include");
-        let head_include: String = fs::read_to_string(head_include_path).unwrap_or_default();
-        let mut body_include_path = PathBuf::from(source);
-        body_include_path.push("body.include");
-        let body_include: String = fs::read_to_string(body_include_path).unwrap_or_default();
+        let head_include = create_include("head");
+        let body_include = create_include("body");
         let page = format!("<!DOCTYPE html>\n<html lang='{}'>{}<head>\n<meta charset='utf-8'>\n<title>{}</title>\n<meta name='description' content='{}'>\n<meta name='author' content='{}'>\n<meta name='viewport' content='width=device-width, initial-scale=1'>\n<link rel='stylesheet' href='/main.css'>\n</head>\n<body>\n{}\n{}</body>\n</html>", settings.language, head_include, settings.title, settings.description, settings.author, html_content, body_include);
         let page = str::replace(&page, "|LIST|", &list_html);
         let prefix = &target.parent().unwrap();
@@ -98,3 +94,12 @@ fn parse_config(args: &[String]) -> (&Path, &Path) {
     (source, destination)
 }
 
+fn create_include(name: &str) -> String {
+    let args: Vec<String> = env::args().collect();
+    let (source, _) = parse_config(&args);
+    let mut include_path = PathBuf::from(source);
+    include_path.push(name);
+    include_path.push(".include");
+    let include: String = fs::read_to_string(include_path).unwrap_or_default();
+    include
+}
