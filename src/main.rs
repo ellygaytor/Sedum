@@ -79,7 +79,7 @@ fn main() {
         let page = format!("<!DOCTYPE html>\n<html lang='{}'>{}<head>\n<meta charset='utf-8'>\n<title>{}</title>\n<meta name='description' content='{}'>\n<meta name='author' content='{}'>\n<meta name='viewport' content='width=device-width, initial-scale=1'>\n<link rel='stylesheet' href='/main.css'>\n</head>\n<body>\n{}\n{}</body>\n</html>", settings.language, head_include, settings.title, settings.description, settings.author, html_content, body_include);
         let page = str::replace(&page, "|LIST|", &list_html);
         let prefix = &target.parent().unwrap();
-        std::fs::create_dir_all(prefix).unwrap();
+        fs::create_dir_all(prefix).unwrap();
         target.set_extension("html");
         let mut target_file = File::create(target).expect("Unable to create.");
         write!(&mut target_file, "{}", page).expect("Could not write to target file.");
