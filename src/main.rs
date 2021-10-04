@@ -16,6 +16,7 @@ struct Page {
     description: String,
     language: String,
     author: String,
+    #[serde(default)]
     list: String
 }
 
