@@ -26,7 +26,7 @@ You must have rust and cargo installed and available on the path.
 ### Netlify
 
 #### Setup
-1. Set your build command to `wget https://github.com/ellygaytor/Sedum/releases/latest/download/sedum && chmod +x sedum && ./sedum [source] [result]`, setting the source directory and the directory you want the generated files to be placed in.
+1. Set your build command to `wget -N https://github.com/ellygaytor/Sedum/releases/latest/download/sedum && chmod +x sedum && ./sedum [source] [result]`, setting the source directory and the directory you want the generated files to be placed in.
 2. Set your publish directory to `[target]` that you chose in step one.
 3. Prepend the appropriate yaml to your markdown files:
   - `title`
