@@ -2,7 +2,7 @@ use std::{
     env, 
     fs::{self, File}, 
     io::Write, 
-    path::{Path, PathBuf},
+    path::{PathBuf},
   };
 
 use extract_frontmatter::Extractor;
@@ -25,18 +25,16 @@ fn main() {
     pulldown_cmark_options.insert(Options::ENABLE_STRIKETHROUGH);
     pulldown_cmark_options.insert(Options::ENABLE_TABLES);
 
-    let args: Vec<String> = env::args().collect();
-
-    let (source, destination) = parse_config(&args);
+    let (source, destination) = parse_config();
 
     let mut source_files: Vec<PathBuf> = Vec::new();
 
-    for entry in WalkDir::new(source).into_iter().filter_map(|e| e.ok()) {
+    for entry in WalkDir::new(&source).into_iter().filter_map(|e| e.ok()) {
         if entry.metadata().unwrap().is_file() {
             if entry.path().extension().unwrap() == "md" {
                 source_files.push(entry.path().to_path_buf())
             } else if entry.path().extension().unwrap() != "include" {
-                let relative = &entry.path().strip_prefix(source).expect("Not a prefix");
+                let relative = &entry.path().strip_prefix(&source).expect("Not a prefix");
                 let target = destination.join(relative);
                 let prefix = &target.parent().unwrap();
                 std::fs::create_dir_all(prefix).unwrap();
@@ -47,7 +45,7 @@ fn main() {
 
     let mut list_html = String::from("<ul>");
     for source_file in &source_files {
-        let relative = source_file.strip_prefix(source).expect("Not a prefix");
+        let relative = source_file.strip_prefix(&source).expect("Not a prefix");
         let contents = fs::read_to_string(source_file)
             .expect("There was an error reading the markdown file.");
         let mut extractor = Extractor::new(&contents);
@@ -65,7 +63,7 @@ fn main() {
     let body_include = create_include("body");
 
     for source_file in &source_files {
-        let relative = source_file.strip_prefix(source).expect("Not a prefix");
+        let relative = source_file.strip_prefix(&source).expect("Not a prefix");
         let mut target = destination.join(relative);
         let contents = fs::read_to_string(source_file)
             .expect("There was an error reading the markdown file.");
@@ -88,16 +86,15 @@ fn main() {
     }
 }
 
-fn parse_config(args: &[String]) -> (&Path, &Path) {
-    let source = Path::new(&args[1]);
-    let destination = Path::new(&args[2]);
-
-    (source, destination)
-}
+fn parse_config() -> (PathBuf, PathBuf) {
+    let mut args = env::args();
+    let source = args.next().unwrap();
+    let destination = args.next().unwrap();
+    (source.into(), destination.into())
+  }
 
 fn create_include(name: &str) -> String {
-    let args: Vec<String> = env::args().collect();
-    let (source, _) = parse_config(&args);
+    let (source, _) = parse_config();
     let mut include_path = PathBuf::from(source);
     include_path.push(name);
     include_path.push(".include");
