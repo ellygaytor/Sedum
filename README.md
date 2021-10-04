@@ -33,6 +33,7 @@ You must have rust and cargo installed and available on the path.
   - `description`
   - `language`
   - `author`
+  - `list` ('True' or 'False') [Optional]
 
 #### Generation
 1. Place your markdown files in `[source]` that you set in step one of setup
