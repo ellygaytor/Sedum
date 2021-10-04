@@ -9,7 +9,8 @@ author: ellygaytor
 
 Sedum is a static site generator written in Rust. It can be used locally or with a service like Netlify to generate websites on the fly.
 
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ellygaytor/Sedum/Rust) [![codecov](https://codecov.io/gh/ellygaytor/Sedum/branch/main/graph/badge.svg?token=7QNP00NYOC)](https://codecov.io/gh/ellygaytor/Sedum)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ellygaytor/Sedum/Rust) [![codecov](https://codecov.io/gh/ellygaytor/Sedum/branch/main/graph/badge.svg?token=7QNP00NYOC)](https://codecov.io/gh/ellygaytor/Sedum) [![Netlify Status](https://api.netlify.com/api/v1/badges/23dd963b-38ec-4f1c-8d1a-7ab1fb373bc2/deploy-status)](https://app.netlify.com/sites/sedum/deploys)
+
 
 ## Usage
 
@@ -25,7 +26,7 @@ You must have rust and cargo installed and available on the path.
   - `description`
   - `language`
   - `author`
-
+  - `list` ('True' or 'False') [Optional]
 #### Generation
 1. Run `cargo run [source] [target]`, setting the source directory and the directory you want the generated files to be placed in
 
@@ -39,6 +40,7 @@ You must have rust and cargo installed and available on the path.
   - `description`
   - `language`
   - `author`
+  - `list` ('True' or 'False') [Optional]
 
 #### Generation
 1. Place your markdown files in `[source]` that you set in step one of setup
