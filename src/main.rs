@@ -3,6 +3,7 @@ use std::{
     fs::{self, File}, 
     io::Write, 
     path::{PathBuf},
+    ffi::{OsStr}
   };
 
 use extract_frontmatter::Extractor;
@@ -31,14 +32,17 @@ fn main() {
 
     for entry in WalkDir::new(&source).into_iter().filter_map(|e| e.ok()) {
         if entry.metadata().unwrap().is_file() {
-            if entry.path().extension().unwrap() == "md" {
-                source_files.push(entry.path().to_path_buf())
-            } else if entry.path().extension().unwrap() != "include" {
-                let relative = &entry.path().strip_prefix(&source).expect("Not a prefix");
-                let target = destination.join(relative);
-                let prefix = &target.parent().unwrap();
-                std::fs::create_dir_all(prefix).unwrap();
-                fs::copy(entry.path(), target).expect("Could not copy file");
+            match entry.path().extension().and_then(OsStr::to_str) {
+                Some("md") => source_files.push(entry.path().to_path_buf()),
+                Some("include") => (),
+                None => (),
+                _ => {
+                        let relative = &entry.path().strip_prefix(&source).expect("Not a prefix");
+                        let target = destination.join(relative);
+                        let prefix = &target.parent().unwrap();
+                        std::fs::create_dir_all(prefix).unwrap();
+                        fs::copy(entry.path(), target).expect("Could not copy file");
+                    }
             }
         }
     }
@@ -88,6 +92,7 @@ fn main() {
 
 fn parse_config() -> (PathBuf, PathBuf) {
     let mut args = env::args();
+    let _ = args.next().unwrap();
     let source = args.next().unwrap();
     let destination = args.next().unwrap();
     (source.into(), destination.into())
