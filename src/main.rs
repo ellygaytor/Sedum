@@ -93,8 +93,8 @@ fn main() {
 fn parse_config() -> (PathBuf, PathBuf) {
     let mut args = env::args();
     let _ = args.next().unwrap();
-    let source = args.next().unwrap();
-    let destination = args.next().unwrap();
+    let source = args.next().unwrap_or("source".to_string());
+    let destination = args.next().unwrap_or("result".to_string());
     (source.into(), destination.into())
   }
 
