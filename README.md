@@ -2,7 +2,7 @@
 
 Sedum is a static site generator written in Rust. It can be used locally or with a service like Netlify to generate websites on the fly.
 
-[![Check and Lint](https://github.com/ellygaytor/Sedum/actions/workflows/check_and_lint.yaml/badge.svg)](https://github.com/ellygaytor/Sedum/actions/workflows/check_and_lint.yaml) [![Security audit](https://github.com/ellygaytor/Sedum/actions/workflows/audit.yml/badge.svg)](https://github.com/ellygaytor/Sedum/actions/workflows/audit.yml) [![Rust-static-build](https://github.com/ellygaytor/Sedum/actions/workflows/build.yml/badge.svg)](https://github.com/ellygaytor/Sedum/actions/workflows/build.yml) [![Netlify Status](https://api.netlify.com/api/v1/badges/23dd963b-38ec-4f1c-8d1a-7ab1fb373bc2/deploy-status)](https://app.netlify.com/sites/sedum/deploys)
+[![Check and Lint](https://github.com/ellygaytor/Sedum/actions/workflows/check_and_lint.yaml/badge.svg)](https://github.com/ellygaytor/Sedum/actions/workflows/check_and_lint.yaml) [![Security audit](https://github.com/ellygaytor/Sedum/actions/workflows/audit.yml/badge.svg)](https://github.com/ellygaytor/Sedum/actions/workflows/audit.yml) [![Release](https://github.com/ellygaytor/Sedum/actions/workflows/release.yml/badge.svg)](https://github.com/ellygaytor/Sedum/actions/workflows/release.yml) [![Netlify Status](https://api.netlify.com/api/v1/badges/23dd963b-38ec-4f1c-8d1a-7ab1fb373bc2/deploy-status)](https://app.netlify.com/sites/sedum/deploys)
 
 
 ## Usage
