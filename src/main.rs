@@ -100,7 +100,7 @@ fn parse_config() -> (PathBuf, PathBuf) {
 
 fn create_include(name: &str) -> String {
     let (source, _) = parse_config();
-    let mut include_path = PathBuf::from(source);
+    let mut include_path = source;
     include_path.push(name);
     include_path.push(".include");
     let include: String = fs::read_to_string(include_path).unwrap_or_default();
