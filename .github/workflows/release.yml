@@ -24,7 +24,7 @@ jobs:
         uses: svenstaro/upload-release-action@v1-release
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: target/release/serde
+          file: target/release/sedum
           asset_name: alemanes-linux-amd64
           tag: ${{ steps.bump_version.outputs.new_tag }}
           overwrite: true
