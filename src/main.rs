@@ -75,50 +75,54 @@ fn main() {
                 settings.title
             );
         }
-    
-    list_html = format!("{}</ul>", list_html);
 
-    let head_include = create_include("head");
-    let body_include = create_include("body");
+        list_html = format!("{}</ul>", list_html);
 
-    for source_file in &source_files {
-        let relative = source_file.strip_prefix(&source).expect("Not a prefix");
-        let mut target = destination.join(relative);
-        let contents =
-            fs::read_to_string(source_file).expect("There was an error reading the markdown file.");
-        let mut extractor = Extractor::new(&contents);
-        extractor.select_by_terminator("---");
-        extractor.strip_prefix("---");
-        let settings_yaml: String = extractor.extract();
-        let content: &str = extractor.remove().trim();
-        let settings = serde_yaml::from_str::<Page>(&settings_yaml).unwrap();
-        let parser = Parser::new_ext(content, pulldown_cmark_options);
-        let mut html_content = String::new();
-        html::push_html(&mut html_content, parser);
-        let mut lang_string = String::new();
-        if !settings.language.is_empty() {
-            lang_string = format!(" lang='{}'", settings.language);
+        let head_include = create_include("head");
+        let body_include = create_include("body");
+
+        for source_file in &source_files {
+            let relative = source_file.strip_prefix(&source).expect("Not a prefix");
+            let mut target = destination.join(relative);
+            let contents = fs::read_to_string(source_file)
+                .expect("There was an error reading the markdown file.");
+            let mut extractor = Extractor::new(&contents);
+            extractor.select_by_terminator("---");
+            extractor.strip_prefix("---");
+            let settings_yaml: String = extractor.extract();
+            let content: &str = extractor.remove().trim();
+            let settings = serde_yaml::from_str::<Page>(&settings_yaml).unwrap();
+            let parser = Parser::new_ext(content, pulldown_cmark_options);
+            let mut html_content = String::new();
+            html::push_html(&mut html_content, parser);
+            let mut lang_string = String::new();
+            if !settings.language.is_empty() {
+                lang_string = format!(" lang='{}'", settings.language);
+            }
+            let title_string;
+            if !settings.title.is_empty() {
+                title_string = settings.title.to_string();
+            } else {
+                let title_file = source_file
+                    .file_stem()
+                    .unwrap_or_default()
+                    .to_str()
+                    .unwrap_or_default();
+                title_string = String::from(title_file);
+            }
+            let mut description_string = String::new();
+            if !settings.description.is_empty() {
+                description_string = format!(" lang='{}'", settings.description);
+            }
+            let page = format!("<!DOCTYPE html>\n<html{}>{}<head>\n<meta charset='utf-8'>\n<title>{}</title>\n<meta name='description' content='{}'>\n<meta name='author' content='{}'>\n<meta name='viewport' content='width=device-width, initial-scale=1'>\n<link rel='stylesheet' href='/main.css'>\n</head>\n<body>\n{}\n{}</body>\n</html>", lang_string, head_include, &title_string, description_string, settings.author, html_content, body_include);
+            let page = str::replace(&page, "|LIST|", &list_html);
+            let prefix = &target.parent().unwrap();
+            fs::create_dir_all(prefix).unwrap();
+            target.set_extension("html");
+            let mut target_file = File::create(target).expect("Unable to create.");
+            write!(&mut target_file, "{}", page).expect("Could not write to target file.");
         }
-        let title_string;
-        if !settings.title.is_empty() {
-            title_string = settings.title.to_string();
-        } else {
-            let title_file = source_file.file_stem().unwrap_or_default().to_str().unwrap_or_default();
-            title_string = String::from(title_file);
-        } 
-        let mut description_string = String::new();
-        if !settings.description.is_empty() {
-            description_string = format!(" lang='{}'", settings.description);
-        }  
-        let page = format!("<!DOCTYPE html>\n<html{}>{}<head>\n<meta charset='utf-8'>\n<title>{}</title>\n<meta name='description' content='{}'>\n<meta name='author' content='{}'>\n<meta name='viewport' content='width=device-width, initial-scale=1'>\n<link rel='stylesheet' href='/main.css'>\n</head>\n<body>\n{}\n{}</body>\n</html>", lang_string, head_include, &title_string, description_string, settings.author, html_content, body_include);
-        let page = str::replace(&page, "|LIST|", &list_html);
-        let prefix = &target.parent().unwrap();
-        fs::create_dir_all(prefix).unwrap();
-        target.set_extension("html");
-        let mut target_file = File::create(target).expect("Unable to create.");
-        write!(&mut target_file, "{}", page).expect("Could not write to target file.");
     }
-}
 }
 
 fn parse_config() -> (PathBuf, PathBuf) {
