@@ -13,8 +13,10 @@ use walkdir::WalkDir;
 
 #[derive(Deserialize, Debug)]
 struct Page {
+    #[serde(default)]
     title: String,
     description: String,
+    #[serde(default)]
     language: String,
     author: String,
     #[serde(default)]
