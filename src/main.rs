@@ -15,9 +15,11 @@ use walkdir::WalkDir;
 struct Page {
     #[serde(default)]
     title: String,
+    #[serde(default)]
     description: String,
     #[serde(default)]
     language: String,
+    #[serde(default)]
     author: String,
     #[serde(default)]
     list: String,
@@ -103,8 +105,12 @@ fn main() {
         } else {
             let title_file = source_file.file_stem().unwrap_or_default().to_str().unwrap_or_default();
             title_string = String::from(title_file);
-        }   
-        let page = format!("<!DOCTYPE html>\n<html{}>{}<head>\n<meta charset='utf-8'>\n<title>{}</title>\n<meta name='description' content='{}'>\n<meta name='author' content='{}'>\n<meta name='viewport' content='width=device-width, initial-scale=1'>\n<link rel='stylesheet' href='/main.css'>\n</head>\n<body>\n{}\n{}</body>\n</html>", lang_string, head_include, &title_string, settings.description, settings.author, html_content, body_include);
+        } 
+        let mut description_string = String::new();
+        if !settings.description.is_empty() {
+            description_string = format!(" lang='{}'", settings.description);
+        }  
+        let page = format!("<!DOCTYPE html>\n<html{}>{}<head>\n<meta charset='utf-8'>\n<title>{}</title>\n<meta name='description' content='{}'>\n<meta name='author' content='{}'>\n<meta name='viewport' content='width=device-width, initial-scale=1'>\n<link rel='stylesheet' href='/main.css'>\n</head>\n<body>\n{}\n{}</body>\n</html>", lang_string, head_include, &title_string, description_string, settings.author, html_content, body_include);
         let page = str::replace(&page, "|LIST|", &list_html);
         let prefix = &target.parent().unwrap();
         fs::create_dir_all(prefix).unwrap();
