@@ -1,10 +1,10 @@
 use std::{
-    env, 
-    fs::{self, File}, 
-    io::Write, 
-    path::{PathBuf},
-    ffi::{OsStr}
-  };
+    env,
+    ffi::OsStr,
+    fs::{self, File},
+    io::Write,
+    path::PathBuf,
+};
 
 use extract_frontmatter::Extractor;
 use pulldown_cmark::{html, Options, Parser};
@@ -37,12 +37,12 @@ fn main() {
                 Some("include") => (),
                 None => (),
                 _ => {
-                        let relative = &entry.path().strip_prefix(&source).expect("Not a prefix");
-                        let target = destination.join(relative);
-                        let prefix = &target.parent().unwrap();
-                        std::fs::create_dir_all(prefix).unwrap();
-                        fs::copy(entry.path(), target).expect("Could not copy file");
-                    }
+                    let relative = &entry.path().strip_prefix(&source).expect("Not a prefix");
+                    let target = destination.join(relative);
+                    let prefix = &target.parent().unwrap();
+                    std::fs::create_dir_all(prefix).unwrap();
+                    fs::copy(entry.path(), target).expect("Could not copy file");
+                }
             }
         }
     }
@@ -50,15 +50,26 @@ fn main() {
     let mut list_html = String::from("<ul>");
     for source_file in &source_files {
         let relative = source_file.strip_prefix(&source).expect("Not a prefix");
-        let contents = fs::read_to_string(source_file)
-            .expect("There was an error reading the markdown file.");
+        let contents =
+            fs::read_to_string(source_file).expect("There was an error reading the markdown file.");
         let mut extractor = Extractor::new(&contents);
         extractor.select_by_terminator("---");
         extractor.strip_prefix("---");
         let settings_yaml: String = extractor.extract();
-        let settings = serde_yaml::from_str::<Page>(&settings_yaml).unwrap();
+        let settings = serde_yaml::from_str::<Page>(&settings_yaml).unwrap_or(Page {
+            title: "".to_string(),
+            description: "".to_string(),
+            language: "".to_string(),
+            author: "Sedum".to_string(),
+            list: "False".to_string(),
+        });
         if settings.list == "True" {
-            list_html = format!("{}<li><a href='{}'>{}</a></li>", list_html, relative.display(), settings.title);
+            list_html = format!(
+                "{}<li><a href='{}'>{}</a></li>",
+                list_html,
+                relative.display(),
+                settings.title
+            );
         }
     }
     list_html = format!("{}</ul>", list_html);
@@ -69,8 +80,8 @@ fn main() {
     for source_file in &source_files {
         let relative = source_file.strip_prefix(&source).expect("Not a prefix");
         let mut target = destination.join(relative);
-        let contents = fs::read_to_string(source_file)
-            .expect("There was an error reading the markdown file.");
+        let contents =
+            fs::read_to_string(source_file).expect("There was an error reading the markdown file.");
         let mut extractor = Extractor::new(&contents);
         extractor.select_by_terminator("---");
         extractor.strip_prefix("---");
@@ -92,11 +103,11 @@ fn main() {
 
 fn parse_config() -> (PathBuf, PathBuf) {
     let mut args = env::args();
-    let _ = args.next().unwrap();
+    let _ = args.next().unwrap_or_default();
     let source = args.next().unwrap_or("source".to_string());
     let destination = args.next().unwrap_or("result".to_string());
     (source.into(), destination.into())
-  }
+}
 
 fn create_include(name: &str) -> String {
     let (source, _) = parse_config();
