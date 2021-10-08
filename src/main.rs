@@ -71,7 +71,7 @@ fn main() {
                 settings.title
             );
         }
-    }
+    
     list_html = format!("{}</ul>", list_html);
 
     let head_include = create_include("head");
@@ -95,7 +95,14 @@ fn main() {
         if !settings.language.is_empty() {
             lang_string = format!(" lang='{}'", settings.language);
         }
-        let page = format!("<!DOCTYPE html>\n<html{}>{}<head>\n<meta charset='utf-8'>\n<title>{}</title>\n<meta name='description' content='{}'>\n<meta name='author' content='{}'>\n<meta name='viewport' content='width=device-width, initial-scale=1'>\n<link rel='stylesheet' href='/main.css'>\n</head>\n<body>\n{}\n{}</body>\n</html>", lang_string, head_include, settings.title, settings.description, settings.author, html_content, body_include);
+        let title_string;
+        if !settings.title.is_empty() {
+            title_string = settings.title.to_string();
+        } else {
+            let title_file = source_file.file_stem().unwrap_or_default().to_str().unwrap_or_default();
+            title_string = String::from(title_file);
+        }   
+        let page = format!("<!DOCTYPE html>\n<html{}>{}<head>\n<meta charset='utf-8'>\n<title>{}</title>\n<meta name='description' content='{}'>\n<meta name='author' content='{}'>\n<meta name='viewport' content='width=device-width, initial-scale=1'>\n<link rel='stylesheet' href='/main.css'>\n</head>\n<body>\n{}\n{}</body>\n</html>", lang_string, head_include, &title_string, settings.description, settings.author, html_content, body_include);
         let page = str::replace(&page, "|LIST|", &list_html);
         let prefix = &target.parent().unwrap();
         fs::create_dir_all(prefix).unwrap();
@@ -103,6 +110,7 @@ fn main() {
         let mut target_file = File::create(target).expect("Unable to create.");
         write!(&mut target_file, "{}", page).expect("Could not write to target file.");
     }
+}
 }
 
 fn parse_config() -> (PathBuf, PathBuf) {
