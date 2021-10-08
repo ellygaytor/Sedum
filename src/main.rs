@@ -119,6 +119,8 @@ fn main() {
             let mut page = format!("<!DOCTYPE html>\n<html{}>{}<head>\n<meta charset='utf-8'>\n<title>{}</title>\n<meta name='description' content='{}'>\n<meta name='author' content='{}'>\n<meta name='viewport' content='width=device-width, initial-scale=1'>\n<link rel='stylesheet' href='/main.css'>\n</head>\n<body>\n{}\n{}</body>\n</html>", lang_string, head_include, &title_string, description_string, settings.author, html_content, body_include);
             if list_count!=0 {
                 page = str::replace(&page, "|LIST|", &list_html);
+            } else {
+                page = str::replace(&page, "|LIST|", "");
             }
             let prefix = &target.parent().unwrap();
             fs::create_dir_all(prefix).unwrap();
