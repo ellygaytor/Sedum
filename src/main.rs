@@ -55,8 +55,13 @@ fn main() {
     let mut list_count = 0;
     for source_file in &source_files {
         let relative = source_file.strip_prefix(&source).expect("Not a prefix");
-        let contents =
-            fs::read_to_string(source_file).expect("There was an error reading the markdown file.");
+        let contents = match fs::read_to_string(source_file){
+            Ok(contents) => contents,
+            Err(e) => {
+                println!("Could not read the markdown file.");
+                continue;
+            }
+        };
         let mut extractor = Extractor::new(&contents);
         extractor.select_by_terminator("---");
         extractor.strip_prefix("---");
@@ -102,8 +107,13 @@ fn main() {
         for source_file in &source_files {
             let relative = source_file.strip_prefix(&source).expect("Not a prefix");
             let mut target = destination.join(relative);
-            let contents = fs::read_to_string(source_file)
-                .expect("There was an error reading the markdown file.");
+            let contents = match fs::read_to_string(source_file){
+                Ok(contents) => contents,
+                Err(e) => {
+                    println!("Could not read the markdown file.");
+                    continue;
+                }
+            };
             let mut extractor = Extractor::new(&contents);
             extractor.select_by_terminator("---");
             extractor.strip_prefix("---");
