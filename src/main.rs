@@ -164,7 +164,13 @@ fn main() {
             let prefix = &target.parent().unwrap();
             fs::create_dir_all(prefix).unwrap();
             target.set_extension("html");
-            let mut target_file = File::create(target).expect("Unable to create.");
+            let mut target_file = match File::create(target) {
+                Ok(target_file) => target_file,
+                Err(e) =>{
+                    println!("Could not create target file: {}", e);
+                    continue;
+                }
+            };
             write!(&mut target_file, "{}", page).expect("Could not write to target file.");
         }
     }
