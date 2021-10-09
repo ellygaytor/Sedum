@@ -78,11 +78,22 @@ fn main() {
             });
         }
         if settings.list == "True" {
+            let title_string;
+            if !settings.title.is_empty() {
+                title_string = settings.title.to_string();
+            } else {
+                let title_file = source_file
+                    .file_stem()
+                    .unwrap_or_default()
+                    .to_str()
+                    .unwrap_or_default();
+                title_string = String::from(title_file);
+            }
             list_html = format!(
                 "{}<li><a href='{}'>{}</a></li>",
                 list_html,
                 relative.display(),
-                settings.title
+                title_string
             );
             list_count += 1;
         }
