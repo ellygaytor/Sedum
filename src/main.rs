@@ -61,13 +61,22 @@ fn main() {
         extractor.select_by_terminator("---");
         extractor.strip_prefix("---");
         let settings_yaml: String = extractor.extract();
-        let settings = serde_yaml::from_str::<Page>(&settings_yaml).unwrap_or(Page {
+        let mut settings: Page = Page {
             title: "".to_string(),
             description: "".to_string(),
             language: "".to_string(),
             author: "Sedum".to_string(),
-            list: "False".to_string(),
-        });
+            list: "".to_string(),
+        };
+        if !settings_yaml.is_empty() {
+            settings = serde_yaml::from_str::<Page>(&settings_yaml).unwrap_or(Page {
+                title: "".to_string(),
+                description: "".to_string(),
+                language: "".to_string(),
+                author: "Sedum".to_string(),
+                list: "False".to_string(),
+            });
+        }
         if settings.list == "True" {
             list_html = format!(
                 "{}<li><a href='{}'>{}</a></li>",
@@ -93,8 +102,22 @@ fn main() {
             extractor.strip_prefix("---");
             let settings_yaml: String = extractor.extract();
             let content: &str = extractor.remove().trim();
-            let settings = serde_yaml::from_str::<Page>(&settings_yaml).unwrap();
-            let parser = Parser::new_ext(content, pulldown_cmark_options);
+            let mut settings: Page = Page {
+                title: "".to_string(),
+                description: "".to_string(),
+                language: "".to_string(),
+                author: "Sedum".to_string(),
+                list: "".to_string(),
+            };
+            if !settings_yaml.is_empty() {
+                settings = serde_yaml::from_str::<Page>(&settings_yaml).unwrap_or(Page {
+                    title: "".to_string(),
+                    description: "".to_string(),
+                    language: "".to_string(),
+                    author: "Sedum".to_string(),
+                    list: "False".to_string(),
+                });
+            }            let parser = Parser::new_ext(content, pulldown_cmark_options);
             let mut html_content = String::new();
             html::push_html(&mut html_content, parser);
             let mut lang_string = String::new();
@@ -117,7 +140,7 @@ fn main() {
                 description_string = format!(" lang='{}'", settings.description);
             }
             let mut page = format!("<!DOCTYPE html>\n<html{}>{}<head>\n<meta charset='utf-8'>\n<title>{}</title>\n<meta name='description' content='{}'>\n<meta name='author' content='{}'>\n<meta name='viewport' content='width=device-width, initial-scale=1'>\n<link rel='stylesheet' href='/main.css'>\n</head>\n<body>\n{}\n{}</body>\n</html>", lang_string, head_include, &title_string, description_string, settings.author, html_content, body_include);
-            if list_count!=0 {
+            if list_count != 0 {
                 page = str::replace(&page, "|LIST|", &list_html);
             } else {
                 page = str::replace(&page, "|LIST|", "");
