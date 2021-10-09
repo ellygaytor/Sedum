@@ -58,7 +58,7 @@ fn main() {
         let contents = match fs::read_to_string(source_file){
             Ok(contents) => contents,
             Err(e) => {
-                println!("Could not read the markdown file.");
+                println!("Could not read the markdown file: {}", e);
                 continue;
             }
         };
@@ -110,7 +110,7 @@ fn main() {
             let contents = match fs::read_to_string(source_file){
                 Ok(contents) => contents,
                 Err(e) => {
-                    println!("Could not read the markdown file.");
+                    println!("Could not read the markdown file: {}", e);
                     continue;
                 }
             };
