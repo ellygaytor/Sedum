@@ -101,23 +101,22 @@ fn main() {
             extractor.select_by_terminator("---");
             extractor.strip_prefix("---");
             let settings_yaml: String = extractor.extract();
-            let content: &str = extractor.remove().trim();
-            let mut settings: Page = Page {
-                title: "".to_string(),
-                description: "".to_string(),
-                language: "".to_string(),
-                author: "Sedum".to_string(),
-                list: "".to_string(),
+
+            let (content, settings) = match serde_yaml::from_str(&settings_yaml) {
+                Ok(settings) => (extractor.remove().trim(), settings),
+                Err(_) => (
+                    contents.as_str(),
+                    Page {
+                        title: "".to_string(),
+                        description: "".to_string(),
+                        language: "".to_string(),
+                        author: "Sedum".to_string(),
+                        list: "".to_string(),
+                    }
+                ),
             };
-            if !settings_yaml.is_empty() {
-                settings = serde_yaml::from_str::<Page>(&settings_yaml).unwrap_or(Page {
-                    title: "".to_string(),
-                    description: "".to_string(),
-                    language: "".to_string(),
-                    author: "Sedum".to_string(),
-                    list: "False".to_string(),
-                });
-            }            let parser = Parser::new_ext(content, pulldown_cmark_options);
+
+            let parser = Parser::new_ext(content, pulldown_cmark_options);
             let mut html_content = String::new();
             html::push_html(&mut html_content, parser);
             let mut lang_string = String::new();
