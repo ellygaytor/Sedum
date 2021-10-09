@@ -61,22 +61,18 @@ fn main() {
         extractor.select_by_terminator("---");
         extractor.strip_prefix("---");
         let settings_yaml: String = extractor.extract();
-        let mut settings: Page = Page {
-            title: "".to_string(),
-            description: "".to_string(),
-            language: "".to_string(),
-            author: "Sedum".to_string(),
-            list: "".to_string(),
+        let (settings) = match serde_yaml::from_str(&settings_yaml) {
+            Ok(settings) => (settings),
+            Err(_) => (
+                Page {
+                    title: "".to_string(),
+                    description: "".to_string(),
+                    language: "".to_string(),
+                    author: "Sedum".to_string(),
+                    list: "".to_string(),
+                }
+            ),
         };
-        if !settings_yaml.is_empty() {
-            settings = serde_yaml::from_str::<Page>(&settings_yaml).unwrap_or(Page {
-                title: "".to_string(),
-                description: "".to_string(),
-                language: "".to_string(),
-                author: "Sedum".to_string(),
-                list: "False".to_string(),
-            });
-        }
         if settings.list == "True" {
             let title_string;
             if !settings.title.is_empty() {
