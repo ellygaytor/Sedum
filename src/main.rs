@@ -61,16 +61,16 @@ fn main() {
         extractor.select_by_terminator("---");
         extractor.strip_prefix("---");
         let settings_yaml: String = extractor.extract();
-        let (settings) = match serde_yaml::from_str(&settings_yaml) {
+        let settings = match serde_yaml::from_str(&settings_yaml) {
             Ok(settings) => (settings),
             Err(_) => {
-                (Page {
+                Page {
                     title: "".to_string(),
                     description: "".to_string(),
                     language: "".to_string(),
                     author: "Sedum".to_string(),
                     list: "".to_string(),
-                })
+                }
             }
         };
         if settings.list == "True" {
