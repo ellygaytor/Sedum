@@ -55,7 +55,7 @@ fn main() {
     let mut list_count = 0;
     for source_file in &source_files {
         let relative = source_file.strip_prefix(&source).expect("Not a prefix");
-        let contents = match fs::read_to_string(source_file){
+        let contents = match fs::read_to_string(source_file) {
             Ok(contents) => contents,
             Err(e) => {
                 println!("Could not read the markdown file: {}", e);
@@ -68,15 +68,13 @@ fn main() {
         let settings_yaml: String = extractor.extract();
         let settings = match serde_yaml::from_str(&settings_yaml) {
             Ok(settings) => (settings),
-            Err(_) => {
-                Page {
-                    title: "".to_string(),
-                    description: "".to_string(),
-                    language: "".to_string(),
-                    author: "Sedum".to_string(),
-                    list: "".to_string(),
-                }
-            }
+            Err(_) => Page {
+                title: "".to_string(),
+                description: "".to_string(),
+                language: "".to_string(),
+                author: "Sedum".to_string(),
+                list: "".to_string(),
+            },
         };
         if settings.list == "True" {
             let title_string;
@@ -107,7 +105,7 @@ fn main() {
         for source_file in &source_files {
             let relative = source_file.strip_prefix(&source).expect("Not a prefix");
             let mut target = destination.join(relative);
-            let contents = match fs::read_to_string(source_file){
+            let contents = match fs::read_to_string(source_file) {
                 Ok(contents) => contents,
                 Err(e) => {
                     println!("Could not read the markdown file: {}", e);
@@ -166,7 +164,7 @@ fn main() {
             target.set_extension("html");
             let mut target_file = match File::create(target) {
                 Ok(target_file) => target_file,
-                Err(e) =>{
+                Err(e) => {
                     println!("Could not create target file: {}", e);
                     continue;
                 }
