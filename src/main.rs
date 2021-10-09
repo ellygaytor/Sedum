@@ -63,15 +63,15 @@ fn main() {
         let settings_yaml: String = extractor.extract();
         let (settings) = match serde_yaml::from_str(&settings_yaml) {
             Ok(settings) => (settings),
-            Err(_) => (
-                Page {
+            Err(_) => {
+                (Page {
                     title: "".to_string(),
                     description: "".to_string(),
                     language: "".to_string(),
                     author: "Sedum".to_string(),
                     list: "".to_string(),
-                }
-            ),
+                })
+            }
         };
         if settings.list == "True" {
             let title_string;
@@ -119,7 +119,7 @@ fn main() {
                         language: "".to_string(),
                         author: "Sedum".to_string(),
                         list: "".to_string(),
-                    }
+                    },
                 ),
             };
 
