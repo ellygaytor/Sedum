@@ -41,7 +41,13 @@ fn main() {
                 Some("include") => (),
                 None => (),
                 _ => {
-                    let relative = &entry.path().strip_prefix(&source).expect("Not a prefix");
+                    let relative = match entry.path().strip_prefix(&source) {
+                        Ok(path) => path,
+                        Err(_) => {
+                            println!("Could not remove prefix. Skipping this file.");
+                            continue;
+                        }
+                    };
                     let target = destination.join(relative);
                     let prefix = &target.parent().unwrap();
                     std::fs::create_dir_all(prefix).unwrap();
@@ -54,7 +60,13 @@ fn main() {
     let mut list_html = String::from("<ul>");
     let mut list_count = 0;
     for source_file in &source_files {
-        let relative = source_file.strip_prefix(&source).expect("Not a prefix");
+        let relative = match source_file.strip_prefix(&source) {
+            Ok(path) => path,
+            Err(_) => {
+                println!("Could not remove prefix. Skipping this file.");
+                continue;
+            }
+        };
         let source_contents = match fs::read_to_string(source_file) {
             Ok(source_contents) => source_contents,
             Err(e) => {
@@ -103,7 +115,13 @@ fn main() {
         let body_include = create_include("body");
 
         for source_file in &source_files {
-            let relative = source_file.strip_prefix(&source).expect("Not a prefix");
+            let relative = match source_file.strip_prefix(&source) {
+                Ok(path) => path,
+                Err(_) => {
+                    println!("Could not remove prefix. Skipping this file.");
+                    continue;
+                }
+            };
             let mut target = destination.join(relative);
             let source_contents = match fs::read_to_string(source_file) {
                 Ok(source_contents) => source_contents,
