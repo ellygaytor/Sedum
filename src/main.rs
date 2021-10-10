@@ -55,14 +55,14 @@ fn main() {
     let mut list_count = 0;
     for source_file in &source_files {
         let relative = source_file.strip_prefix(&source).expect("Not a prefix");
-        let contents = match fs::read_to_string(source_file) {
-            Ok(contents) => contents,
+        let source_contents = match fs::read_to_string(source_file) {
+            Ok(source_contents) => source_contents,
             Err(e) => {
                 println!("Could not read the markdown file: {}", e);
                 continue;
             }
         };
-        let mut extractor = Extractor::new(&contents);
+        let mut extractor = Extractor::new(&source_contents);
         extractor.select_by_terminator("---");
         extractor.strip_prefix("---");
         let settings_yaml: String = extractor.extract();
@@ -105,14 +105,14 @@ fn main() {
         for source_file in &source_files {
             let relative = source_file.strip_prefix(&source).expect("Not a prefix");
             let mut target = destination.join(relative);
-            let contents = match fs::read_to_string(source_file) {
-                Ok(contents) => contents,
+            let source_contents = match fs::read_to_string(source_file) {
+                Ok(source_contents) => source_contents,
                 Err(e) => {
                     println!("Could not read the markdown file: {}", e);
                     continue;
                 }
             };
-            let mut extractor = Extractor::new(&contents);
+            let mut extractor = Extractor::new(&source_contents);
             extractor.select_by_terminator("---");
             extractor.strip_prefix("---");
             let settings_yaml: String = extractor.extract();
@@ -120,7 +120,7 @@ fn main() {
             let (content, settings) = match serde_yaml::from_str(&settings_yaml) {
                 Ok(settings) => (extractor.remove().trim(), settings),
                 Err(_) => (
-                    contents.as_str(),
+                    source_contents.as_str(),
                     Page {
                         title: "".to_string(),
                         description: "".to_string(),
