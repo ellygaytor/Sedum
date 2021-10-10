@@ -51,7 +51,12 @@ fn main() {
                     let target = destination.join(relative);
                     let prefix = &target.parent().unwrap();
                     std::fs::create_dir_all(prefix).unwrap();
-                    fs::copy(entry.path(), target).expect("Could not copy file");
+                    match fs::copy(entry.path(), target) {
+                        Ok(_) => (),
+                        Err(e) => {
+                            println!("Could not copy file: {}", e)
+                        }
+                    };
                 }
             }
         }
@@ -189,7 +194,7 @@ fn main() {
             };
             match write!(&mut target_file, "{}", page) {
                 Ok(_) => (),
-                Err(e)=>{
+                Err(e) => {
                     println!("Could not write to target file: {}", e);
                     continue;
                 }
