@@ -52,35 +52,7 @@ fn main() {
 
     let opt = Opt::from_args();
 
-    let mut source_files: Vec<PathBuf> = Vec::new();
-
-    for entry in WalkDir::new(&opt.source).into_iter().filter_map(|e| e.ok()) {
-        if entry.metadata().unwrap().is_file() {
-            match entry.path().extension().and_then(OsStr::to_str) {
-                Some("md") => source_files.push(entry.path().to_path_buf()),
-                Some("include") => (),
-                None => (),
-                _ => {
-                    let relative = match entry.path().strip_prefix(&opt.source) {
-                        Ok(path) => path,
-                        Err(_) => {
-                            println!("Could not remove prefix. Skipping this file.");
-                            continue;
-                        }
-                    };
-                    let target = opt.destination.join(relative);
-                    let prefix = &target.parent().unwrap();
-                    std::fs::create_dir_all(prefix).unwrap();
-                    match fs::copy(entry.path(), target) {
-                        Ok(_) => (),
-                        Err(e) => {
-                            println!("Could not copy file: {}", e)
-                        }
-                    };
-                }
-            }
-        }
-    }
+    let source_files= traverse();
 
     let mut list_html = String::from("<ul>");
     let mut list_count = 0;
@@ -230,4 +202,40 @@ fn create_include(name: &str) -> String {
     include_path.push(".include");
     let include: String = fs::read_to_string(include_path).unwrap_or_default();
     include
+}
+
+fn traverse() -> Vec<PathBuf> {
+    let opt = Opt::from_args();
+
+    let mut source_files: Vec<PathBuf> = Vec::new();
+
+    for entry in WalkDir::new(&opt.source).into_iter().filter_map(|e| e.ok()) {
+        if entry.metadata().unwrap().is_file() {
+            match entry.path().extension().and_then(OsStr::to_str) {
+                Some("md") => source_files.push(entry.path().to_path_buf()),
+                Some("include") => (),
+                None => (),
+                _ => {
+                    let relative = match entry.path().strip_prefix(&opt.source) {
+                        Ok(path) => path,
+                        Err(_) => {
+                            println!("Could not remove prefix. Skipping this file.");
+                            continue;
+                        }
+                    };
+                    let target = opt.destination.join(relative);
+                    let prefix = &target.parent().unwrap();
+                    std::fs::create_dir_all(prefix).unwrap();
+                    match fs::copy(entry.path(), target) {
+                        Ok(_) => (),
+                        Err(e) => {
+                            println!("Could not copy file: {}", e)
+                        }
+                    };
+                }
+            }
+        }
+    }
+
+    source_files
 }
