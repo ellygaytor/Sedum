@@ -26,12 +26,22 @@ struct Page {
 }
 
 #[derive(StructOpt, Debug)]
-#[structopt(about = "Sedum is a static site generator. Pass in markdown files and it will automatically generate HTML.")]
+#[structopt(
+    about = "Sedum is a static site generator. Pass in markdown files and it will automatically generate HTML."
+)]
 struct Opt {
-    #[structopt(help = "The directory containing the markdown files to be converted to HTML.", default_value = "source", parse(from_os_str))]
+    #[structopt(
+        help = "The directory containing the markdown files to be converted to HTML.",
+        default_value = "source",
+        parse(from_os_str)
+    )]
     source: PathBuf,
 
-    #[structopt(help = "The directory in which to place the HTML. Does not need to exist, Sedum will make it automatically.", default_value = "result", parse(from_os_str))]
+    #[structopt(
+        help = "The directory in which to place the HTML. Does not need to exist, Sedum will make it automatically.",
+        default_value = "result",
+        parse(from_os_str)
+    )]
     destination: PathBuf,
 }
 
@@ -105,15 +115,15 @@ fn main() {
         };
         if settings.list == "True" {
             let title_string;
-            if !settings.title.is_empty() {
-                title_string = settings.title.to_string();
-            } else {
+            if settings.title.is_empty() {
                 let title_file = source_file
                     .file_stem()
                     .unwrap_or_default()
                     .to_str()
                     .unwrap_or_default();
                 title_string = String::from(title_file);
+            } else {
+                title_string = settings.title.to_string();
             }
             list_html = format!(
                 "{}<li><a href='{}'>{}</a></li>",
@@ -172,25 +182,25 @@ fn main() {
                 lang_string = format!(" lang='{}'", settings.language);
             }
             let title_string;
-            if !settings.title.is_empty() {
-                title_string = settings.title.to_string();
-            } else {
+            if settings.title.is_empty() {
                 let title_file = source_file
                     .file_stem()
                     .unwrap_or_default()
                     .to_str()
                     .unwrap_or_default();
                 title_string = String::from(title_file);
+            } else {
+                title_string = settings.title.to_string();
             }
             let mut description_string = String::new();
             if !settings.description.is_empty() {
                 description_string = format!(" lang='{}'", settings.description);
             }
             let mut page = format!("<!DOCTYPE html>\n<html{}>{}<head>\n<meta charset='utf-8'>\n<title>{}</title>\n<meta name='description' content='{}'>\n<meta name='author' content='{}'>\n<meta name='viewport' content='width=device-width, initial-scale=1'>\n<link rel='stylesheet' href='/main.css'>\n</head>\n<body>\n{}\n{}</body>\n</html>", lang_string, head_include, &title_string, description_string, settings.author, html_content, body_include);
-            if list_count != 0 {
-                page = str::replace(&page, "|LIST|", &list_html);
-            } else {
+            if list_count == 0 {
                 page = str::replace(&page, "|LIST|", "");
+            } else {
+                page = str::replace(&page, "|LIST|", &list_html);
             }
             let prefix = &target.parent().unwrap();
             fs::create_dir_all(prefix).unwrap();
