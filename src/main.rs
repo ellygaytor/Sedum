@@ -26,11 +26,12 @@ struct Page {
 }
 
 #[derive(StructOpt, Debug)]
+#[structopt(about = "Sedum is a static site generator. Pass in markdown files and it will automatically generate HTML.")]
 struct Opt {
-    #[structopt(default_value = "source", parse(from_os_str))]
+    #[structopt(help = "The directory containing the markdown files to be converted to HTML.", default_value = "source", parse(from_os_str))]
     source: PathBuf,
 
-    #[structopt(default_value = "result", parse(from_os_str))]
+    #[structopt(help = "The directory in which to place the HTML. Does not need to exist, Sedum will make it automatically.", default_value = "result", parse(from_os_str))]
     destination: PathBuf,
 }
 
