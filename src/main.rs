@@ -187,7 +187,13 @@ fn main() {
                     continue;
                 }
             };
-            write!(&mut target_file, "{}", page).expect("Could not write to target file.");
+            match write!(&mut target_file, "{}", page) {
+                Ok(_) => (),
+                Err(e)=>{
+                    println!("Could not write to target file: {}", e);
+                    continue;
+                }
+            };
         }
     }
 }
