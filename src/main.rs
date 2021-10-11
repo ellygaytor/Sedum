@@ -225,26 +225,26 @@ fn list_files(source_files: &[PathBuf]) -> (String, i64) {
             },
         };
         if let Some(list) = settings.list {
-                if list == "True" {
-                    let title_string: String = match settings.title {
-                        None => String::from(
-                            source_file
-                                .file_stem()
-                                .unwrap_or_default()
-                                .to_str()
-                                .unwrap_or_default(),
-                        ),
-                        Some(title) => title,
-                    };
-                    list_html = format!(
-                        "{}<li><a href='{}'>{}</a></li>",
-                        list_html,
-                        relative.display(),
-                        title_string
-                    );
-                    list_count += 1;
-                }
-            };
+            if list == "True" {
+                let title_string: String = match settings.title {
+                    None => String::from(
+                        source_file
+                            .file_stem()
+                            .unwrap_or_default()
+                            .to_str()
+                            .unwrap_or_default(),
+                    ),
+                    Some(title) => title,
+                };
+                list_html = format!(
+                    "{}<li><a href='{}'>{}</a></li>",
+                    list_html,
+                    relative.display(),
+                    title_string
+                );
+                list_count += 1;
+            }
+        };
     }
     list_html = format!("{}</ul>", list_html);
 
