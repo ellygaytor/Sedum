@@ -25,6 +25,24 @@ struct Page {
     list: Option<String>,
 }
 
+#[derive(Deserialize, Debug)]
+struct Settings {
+    #[serde(default = "default_author")]
+    default_author: String,
+}
+
+fn default_author() -> String {
+    "Sedum".to_string()
+}
+
+impl Default for Settings {
+    fn default() -> Settings {
+        Settings {
+            default_author: ("Sedum").to_string(),
+        }
+    }
+}
+
 #[derive(StructOpt, Debug)]
 #[structopt(
     about = "Sedum is a static site generator. Pass in markdown files and it will automatically generate HTML."
@@ -52,7 +70,7 @@ fn main() {
 
     let opt = Opt::from_args();
 
-    let source_files = traverse();
+    let (source_files, global_settings) = traverse();
 
     let (list_html, list_count) = list_files(&source_files);
 
@@ -116,7 +134,7 @@ fn main() {
             Some(description) => format!("<meta name='description' content='{}'>", description),
         };
         let author_string = match settings.author {
-            None => String::from("Sedum"),
+            None => String::from(&global_settings.default_author),
             Some(author) => author,
         };
         let mut page = format!("<!DOCTYPE html>\n<html{}>{}<head>\n<meta charset='utf-8'>\n<title>{}</title>\n{}\n<meta name='author' content='{}'>\n<meta name='viewport' content='width=device-width, initial-scale=1'>\n<link rel='stylesheet' href='/main.css'>\n</head>\n<body>\n{}\n{}</body>\n</html>", lang_string, head_include, &title_string, description_string, author_string, html_content, body_include);
@@ -154,24 +172,47 @@ fn create_include(name: &str) -> String {
     include
 }
 
-fn traverse() -> Vec<PathBuf> {
+fn traverse() -> (Vec<PathBuf>, Settings) {
     let opt = Opt::from_args();
 
     let mut source_files: Vec<PathBuf> = Vec::new();
+
+    let mut global_settings: Settings = Default::default();
 
     for entry in WalkDir::new(&opt.source).into_iter().filter_map(|e| e.ok()) {
         if entry.metadata().unwrap().is_file() {
             match entry.path().extension().and_then(OsStr::to_str) {
                 Some("md") => source_files.push(entry.path().to_path_buf()),
                 Some("include") => (),
-                Some("ron") => {}
-                None => copy_file_to_target(entry.path().to_path_buf()),
+                None => {
+                    match entry
+                        .path()
+                        .file_stem()
+                        .unwrap_or_default()
+                        .to_str()
+                        .unwrap_or_default()
+                    {
+                        "settings" => {
+                            let settings_contents = match fs::read_to_string(entry.path()) {
+                                Ok(source_contents) => source_contents,
+                                Err(e) => {
+                                    println!("Could not read the settings file: {}", e);
+                                    continue;
+                                }
+                            };
+                            if let Ok(settings) = serde_yaml::from_str(&settings_contents) {
+                                global_settings = settings
+                            }
+                        }
+                        _ => copy_file_to_target(entry.path().to_path_buf()),
+                    }
+                }
                 _ => copy_file_to_target(entry.path().to_path_buf()),
             }
         }
     }
 
-    source_files
+    (source_files, global_settings)
 }
 
 fn list_files(source_files: &[PathBuf]) -> (String, i64) {
@@ -244,7 +285,6 @@ fn copy_file_to_target(path: PathBuf) {
             return;
         }
     };
-    dbg!(&relative);
     let target = opt.destination.join(relative);
     let prefix = &target.parent().unwrap();
     std::fs::create_dir_all(prefix).unwrap();
