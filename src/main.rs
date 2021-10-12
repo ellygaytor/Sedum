@@ -11,6 +11,9 @@ use serde::Deserialize;
 use structopt::StructOpt;
 use walkdir::WalkDir;
 
+mod io;
+mod options;
+
 #[derive(Deserialize, Debug)]
 struct Page {
     #[serde(default)]
@@ -43,32 +46,14 @@ impl Default for Settings {
     }
 }
 
-#[derive(StructOpt, Debug)]
-#[structopt(
-    about = "Sedum is a static site generator. Pass in markdown files and it will automatically generate HTML."
-)]
-struct Opt {
-    #[structopt(
-        help = "The directory containing the markdown files to be converted to HTML.",
-        default_value = "source",
-        parse(from_os_str)
-    )]
-    source: PathBuf,
 
-    #[structopt(
-        help = "The directory in which to place the HTML. Does not need to exist, Sedum will make it automatically.",
-        default_value = "result",
-        parse(from_os_str)
-    )]
-    destination: PathBuf,
-}
 
 fn main() {
     let mut pulldown_cmark_options = Options::empty();
     pulldown_cmark_options.insert(Options::ENABLE_STRIKETHROUGH);
     pulldown_cmark_options.insert(Options::ENABLE_TABLES);
 
-    let opt = Opt::from_args();
+    let opt = options::Opt::from_args();
 
     let (source_files, global_settings) = traverse();
 
@@ -164,7 +149,7 @@ fn main() {
 }
 
 fn create_include(name: &str) -> String {
-    let opt = Opt::from_args();
+    let opt = options::Opt::from_args();
     let mut include_path = opt.source;
     include_path.push(name);
     include_path.push(".include");
@@ -173,7 +158,7 @@ fn create_include(name: &str) -> String {
 }
 
 fn traverse() -> (Vec<PathBuf>, Settings) {
-    let opt = Opt::from_args();
+    let opt = options::Opt::from_args();
 
     let mut source_files: Vec<PathBuf> = Vec::new();
 
@@ -204,10 +189,10 @@ fn traverse() -> (Vec<PathBuf>, Settings) {
                                 global_settings = settings
                             }
                         }
-                        _ => copy_file_to_target(entry.path().to_path_buf()),
+                        _ => io::copy_file_to_target(entry.path().to_path_buf()),
                     }
                 }
-                _ => copy_file_to_target(entry.path().to_path_buf()),
+                _ => io::copy_file_to_target(entry.path().to_path_buf()),
             }
         }
     }
@@ -216,7 +201,7 @@ fn traverse() -> (Vec<PathBuf>, Settings) {
 }
 
 fn list_files(source_files: &[PathBuf]) -> (String, i64) {
-    let opt = Opt::from_args();
+    let opt = options::Opt::from_args();
 
     let mut list_html = String::from("<ul>");
     let mut list_count: i64 = 0;
@@ -274,24 +259,4 @@ fn list_files(source_files: &[PathBuf]) -> (String, i64) {
     list_html = format!("{}</ul>", list_html);
 
     (list_html, list_count)
-}
-
-fn copy_file_to_target(path: PathBuf) {
-    let opt = Opt::from_args();
-    let relative = match path.strip_prefix(&opt.source) {
-        Ok(path) => path,
-        Err(_) => {
-            println!("Could not remove prefix. Skipping this file.");
-            return;
-        }
-    };
-    let target = opt.destination.join(relative);
-    let prefix = &target.parent().unwrap();
-    std::fs::create_dir_all(prefix).unwrap();
-    match fs::copy(path, target) {
-        Ok(_) => (),
-        Err(e) => {
-            println!("Could not copy file: {}", e)
-        }
-    };
 }
