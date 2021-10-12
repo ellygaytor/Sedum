@@ -164,25 +164,9 @@ fn traverse() -> Vec<PathBuf> {
             match entry.path().extension().and_then(OsStr::to_str) {
                 Some("md") => source_files.push(entry.path().to_path_buf()),
                 Some("include") => (),
-                None => (),
-                _ => {
-                    let relative = match entry.path().strip_prefix(&opt.source) {
-                        Ok(path) => path,
-                        Err(_) => {
-                            println!("Could not remove prefix. Skipping this file.");
-                            continue;
-                        }
-                    };
-                    let target = opt.destination.join(relative);
-                    let prefix = &target.parent().unwrap();
-                    std::fs::create_dir_all(prefix).unwrap();
-                    match fs::copy(entry.path(), target) {
-                        Ok(_) => (),
-                        Err(e) => {
-                            println!("Could not copy file: {}", e)
-                        }
-                    };
-                }
+                Some("ron") => {}
+                None => copy_file_to_target(entry.path().to_path_buf()),
+                _ => copy_file_to_target(entry.path().to_path_buf()),
             }
         }
     }
@@ -249,4 +233,25 @@ fn list_files(source_files: &[PathBuf]) -> (String, i64) {
     list_html = format!("{}</ul>", list_html);
 
     (list_html, list_count)
+}
+
+fn copy_file_to_target(path: PathBuf) {
+    let opt = Opt::from_args();
+    let relative = match path.strip_prefix(&opt.source) {
+        Ok(path) => path,
+        Err(_) => {
+            println!("Could not remove prefix. Skipping this file.");
+            return;
+        }
+    };
+    dbg!(&relative);
+    let target = opt.destination.join(relative);
+    let prefix = &target.parent().unwrap();
+    std::fs::create_dir_all(prefix).unwrap();
+    match fs::copy(path, target) {
+        Ok(_) => (),
+        Err(e) => {
+            println!("Could not copy file: {}", e)
+        }
+    };
 }
