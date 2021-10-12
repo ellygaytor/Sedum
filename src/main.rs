@@ -11,22 +11,11 @@ use serde::Deserialize;
 use structopt::StructOpt;
 use walkdir::WalkDir;
 
+use crate::page::Page;
+
 mod io;
 mod options;
-
-#[derive(Deserialize, Debug)]
-struct Page {
-    #[serde(default)]
-    title: Option<String>,
-    #[serde(default)]
-    description: Option<String>,
-    #[serde(default)]
-    language: Option<String>,
-    #[serde(default)]
-    author: Option<String>,
-    #[serde(default)]
-    list: Option<String>,
-}
+mod page;
 
 #[derive(Deserialize, Debug)]
 struct Settings {
@@ -57,7 +46,7 @@ fn main() {
 
     let (source_files, global_settings) = traverse();
 
-    let (list_html, list_count) = list_files(&source_files);
+    let (list_html, list_count) = io::list_files(&source_files);
 
     let head_include = create_include("head");
     let body_include = create_include("body");
@@ -200,63 +189,3 @@ fn traverse() -> (Vec<PathBuf>, Settings) {
     (source_files, global_settings)
 }
 
-fn list_files(source_files: &[PathBuf]) -> (String, i64) {
-    let opt = options::Opt::from_args();
-
-    let mut list_html = String::from("<ul>");
-    let mut list_count: i64 = 0;
-    for source_file in source_files {
-        let relative = match source_file.strip_prefix(&opt.source) {
-            Ok(path) => path,
-            Err(_) => {
-                println!("Could not remove prefix. Skipping this file.");
-                continue;
-            }
-        };
-        let source_contents = match fs::read_to_string(source_file) {
-            Ok(source_contents) => source_contents,
-            Err(e) => {
-                println!("Could not read the markdown file: {}", e);
-                continue;
-            }
-        };
-        let mut extractor = Extractor::new(&source_contents);
-        extractor.select_by_terminator("---");
-        extractor.strip_prefix("---");
-        let settings_yaml: String = extractor.extract();
-        let settings = match serde_yaml::from_str(&settings_yaml) {
-            Ok(settings) => (settings),
-            Err(_) => Page {
-                title: None,
-                description: None,
-                language: None,
-                author: None,
-                list: None,
-            },
-        };
-        if let Some(list) = settings.list {
-            if list == "True" {
-                let title_string: String = match settings.title {
-                    None => String::from(
-                        source_file
-                            .file_stem()
-                            .unwrap_or_default()
-                            .to_str()
-                            .unwrap_or_default(),
-                    ),
-                    Some(title) => title,
-                };
-                list_html = format!(
-                    "{}<li><a href='{}'>{}</a></li>",
-                    list_html,
-                    relative.display(),
-                    title_string
-                );
-                list_count += 1;
-            }
-        };
-    }
-    list_html = format!("{}</ul>", list_html);
-
-    (list_html, list_count)
-}
