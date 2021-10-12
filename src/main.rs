@@ -1,41 +1,17 @@
 use std::{
-    ffi::OsStr,
     fs::{self, File},
     io::Write,
-    path::PathBuf,
 };
 
 use extract_frontmatter::Extractor;
 use pulldown_cmark::{html, Options, Parser};
-use serde::Deserialize;
 use structopt::StructOpt;
-use walkdir::WalkDir;
 
-use crate::page::Page;
+use crate::structs::Page;
 
 mod io;
 mod options;
-mod page;
-
-#[derive(Deserialize, Debug)]
-struct Settings {
-    #[serde(default = "default_author")]
-    default_author: String,
-}
-
-fn default_author() -> String {
-    "Sedum".to_string()
-}
-
-impl Default for Settings {
-    fn default() -> Settings {
-        Settings {
-            default_author: ("Sedum").to_string(),
-        }
-    }
-}
-
-
+mod structs;
 
 fn main() {
     let mut pulldown_cmark_options = Options::empty();
@@ -44,7 +20,7 @@ fn main() {
 
     let opt = options::Opt::from_args();
 
-    let (source_files, global_settings) = traverse();
+    let (source_files, global_settings) = io::traverse();
 
     let (list_html, list_count) = io::list_files(&source_files);
 
@@ -145,47 +121,3 @@ fn create_include(name: &str) -> String {
     let include: String = fs::read_to_string(include_path).unwrap_or_default();
     include
 }
-
-fn traverse() -> (Vec<PathBuf>, Settings) {
-    let opt = options::Opt::from_args();
-
-    let mut source_files: Vec<PathBuf> = Vec::new();
-
-    let mut global_settings: Settings = Default::default();
-
-    for entry in WalkDir::new(&opt.source).into_iter().filter_map(|e| e.ok()) {
-        if entry.metadata().unwrap().is_file() {
-            match entry.path().extension().and_then(OsStr::to_str) {
-                Some("md") => source_files.push(entry.path().to_path_buf()),
-                Some("include") => (),
-                None => {
-                    match entry
-                        .path()
-                        .file_stem()
-                        .unwrap_or_default()
-                        .to_str()
-                        .unwrap_or_default()
-                    {
-                        "settings" => {
-                            let settings_contents = match fs::read_to_string(entry.path()) {
-                                Ok(source_contents) => source_contents,
-                                Err(e) => {
-                                    println!("Could not read the settings file: {}", e);
-                                    continue;
-                                }
-                            };
-                            if let Ok(settings) = serde_yaml::from_str(&settings_contents) {
-                                global_settings = settings
-                            }
-                        }
-                        _ => io::copy_file_to_target(entry.path().to_path_buf()),
-                    }
-                }
-                _ => io::copy_file_to_target(entry.path().to_path_buf()),
-            }
-        }
-    }
-
-    (source_files, global_settings)
-}
-

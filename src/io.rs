@@ -1,9 +1,10 @@
-use std::{fs, path::PathBuf};
+use std::{fs, path::PathBuf, ffi::OsStr};
 use extract_frontmatter::Extractor;
 use structopt::StructOpt;
+use walkdir::WalkDir;
 
 use crate::options;
-use crate::page::Page;
+use crate::structs::{Page, Settings};
 
 pub fn copy_file_to_target(path: PathBuf) {
     let opt = options::Opt::from_args();
@@ -85,3 +86,47 @@ pub fn list_files(source_files: &[PathBuf]) -> (String, i64) {
 
     (list_html, list_count)
 }
+
+pub fn traverse() -> (Vec<PathBuf>, Settings) {
+    let opt = options::Opt::from_args();
+
+    let mut source_files: Vec<PathBuf> = Vec::new();
+
+    let mut global_settings: Settings = Default::default();
+
+    for entry in WalkDir::new(&opt.source).into_iter().filter_map(|e| e.ok()) {
+        if entry.metadata().unwrap().is_file() {
+            match entry.path().extension().and_then(OsStr::to_str) {
+                Some("md") => source_files.push(entry.path().to_path_buf()),
+                Some("include") => (),
+                None => {
+                    match entry
+                        .path()
+                        .file_stem()
+                        .unwrap_or_default()
+                        .to_str()
+                        .unwrap_or_default()
+                    {
+                        "settings" => {
+                            let settings_contents = match fs::read_to_string(entry.path()) {
+                                Ok(source_contents) => source_contents,
+                                Err(e) => {
+                                    println!("Could not read the settings file: {}", e);
+                                    continue;
+                                }
+                            };
+                            if let Ok(settings) = serde_yaml::from_str(&settings_contents) {
+                                global_settings = settings
+                            }
+                        }
+                        _ => copy_file_to_target(entry.path().to_path_buf()),
+                    }
+                }
+                _ => copy_file_to_target(entry.path().to_path_buf()),
+            }
+        }
+    }
+
+    (source_files, global_settings)
+}
+
