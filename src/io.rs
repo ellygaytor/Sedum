@@ -1,5 +1,5 @@
-use std::{fs, path::PathBuf, ffi::OsStr};
 use extract_frontmatter::Extractor;
+use std::{ffi::OsStr, fs, path::PathBuf};
 use structopt::StructOpt;
 use walkdir::WalkDir;
 
@@ -129,4 +129,3 @@ pub fn traverse() -> (Vec<PathBuf>, Settings) {
 
     (source_files, global_settings)
 }
-

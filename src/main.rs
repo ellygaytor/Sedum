@@ -9,10 +9,10 @@ use structopt::StructOpt;
 
 use crate::structs::Page;
 
+mod generation;
 mod io;
 mod options;
 mod structs;
-mod generation;
 
 fn main() {
     let mut pulldown_cmark_options = Options::empty();
