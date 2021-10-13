@@ -3,17 +3,16 @@ use std::{ffi::OsStr, fs, path::PathBuf};
 use structopt::StructOpt;
 use walkdir::WalkDir;
 
-use crate::options;
+use crate::{options, structs};
 use crate::structs::{Page, Settings};
 
 pub fn copy_file_to_target(path: PathBuf) {
     let opt = options::Opt::from_args();
-    let relative = match path.strip_prefix(&opt.source) {
-        Ok(path) => path,
-        Err(_) => {
-            println!("Could not remove prefix. Skipping this file.");
-            return;
-        }
+    let relative = if let Ok(path) = path.strip_prefix(&opt.source) {
+        path
+    } else {
+        println!("Could not remove prefix. Skipping this file.");
+        return;
     };
     let target = opt.destination.join(relative);
     let prefix = &target.parent().unwrap();
@@ -21,7 +20,7 @@ pub fn copy_file_to_target(path: PathBuf) {
     match fs::copy(path, target) {
         Ok(_) => (),
         Err(e) => {
-            println!("Could not copy file: {}", e)
+            println!("Could not copy file: {}", e);
         }
     };
 }
@@ -32,12 +31,11 @@ pub fn list_files(source_files: &[PathBuf]) -> (String, i64) {
     let mut list_html = String::from("<ul>");
     let mut list_count: i64 = 0;
     for source_file in source_files {
-        let relative = match source_file.strip_prefix(&opt.source) {
-            Ok(path) => path,
-            Err(_) => {
-                println!("Could not remove prefix. Skipping this file.");
-                continue;
-            }
+        let relative = if let Ok(path) = source_file.strip_prefix(&opt.source) {
+            path
+        } else {
+            println!("Could not remove prefix. Skipping this file.");
+            continue;
         };
         let source_contents = match fs::read_to_string(source_file) {
             Ok(source_contents) => source_contents,
@@ -92,7 +90,7 @@ pub fn traverse() -> (Vec<PathBuf>, Settings) {
 
     let mut source_files: Vec<PathBuf> = Vec::new();
 
-    let mut global_settings: Settings = Default::default();
+    let mut global_settings: Settings = structs::Settings::default();
 
     for entry in WalkDir::new(&opt.source).into_iter().filter_map(|e| e.ok()) {
         if entry.metadata().unwrap().is_file() {
@@ -116,7 +114,7 @@ pub fn traverse() -> (Vec<PathBuf>, Settings) {
                                 }
                             };
                             if let Ok(settings) = serde_yaml::from_str(&settings_contents) {
-                                global_settings = settings
+                                global_settings = settings;
                             }
                         }
                         _ => copy_file_to_target(entry.path().to_path_buf()),

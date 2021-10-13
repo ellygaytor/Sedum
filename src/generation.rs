@@ -22,12 +22,11 @@ pub fn create_include(name: &str) -> String {
     include
 }
 pub fn generate_html(source_file: &Path, constants: &Constants) {
-    let relative = match source_file.strip_prefix(&constants.opt.source) {
-        Ok(path) => path,
-        Err(_) => {
-            println!("Could not remove prefix. Skipping this file.");
-            return;
-        }
+    let relative = if let Ok(path) = source_file.strip_prefix(&constants.opt.source) {
+        path
+    } else {
+        println!("Could not remove prefix. Skipping this file.");
+        return;
     };
     let mut target = constants.opt.destination.join(relative);
     let source_contents = match fs::read_to_string(source_file) {
