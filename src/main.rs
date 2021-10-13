@@ -12,6 +12,7 @@ use crate::structs::Page;
 mod io;
 mod options;
 mod structs;
+mod generation;
 
 fn main() {
     let mut pulldown_cmark_options = Options::empty();
@@ -24,8 +25,8 @@ fn main() {
 
     let (list_html, list_count) = io::list_files(&source_files);
 
-    let head_include = create_include("head");
-    let body_include = create_include("body");
+    let head_include = generation::create_include("head");
+    let body_include = generation::create_include("body");
 
     for source_file in &source_files {
         let relative = match source_file.strip_prefix(&opt.source) {
@@ -111,13 +112,4 @@ fn main() {
             }
         };
     }
-}
-
-fn create_include(name: &str) -> String {
-    let opt = options::Opt::from_args();
-    let mut include_path = opt.source;
-    include_path.push(name);
-    include_path.push(".include");
-    let include: String = fs::read_to_string(include_path).unwrap_or_default();
-    include
 }
