@@ -1,6 +1,6 @@
+use crate::structs::Constants;
 use pulldown_cmark::Options;
 use structopt::StructOpt;
-use crate::structs::{Constants};
 
 mod generation;
 mod io;
@@ -29,9 +29,6 @@ fn main() {
     };
 
     for source_file in &source_files {
-        generation::generate_html(
-            source_file,
-            &constants,
-        );
+        generation::generate_html(source_file, &constants);
     }
 }

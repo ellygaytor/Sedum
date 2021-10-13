@@ -1,10 +1,17 @@
-use std::{fs::{self, File}, io::Write, path::{Path}};
+use std::{
+    fs::{self, File},
+    io::Write,
+    path::Path,
+};
 
 use extract_frontmatter::Extractor;
-use pulldown_cmark::{Parser, html};
+use pulldown_cmark::{html, Parser};
 use structopt::StructOpt;
 
-use crate::{options::{self}, structs::{Constants, Page}};
+use crate::{
+    options::{self},
+    structs::{Constants, Page},
+};
 
 pub fn create_include(name: &str) -> String {
     let opt = options::Opt::from_args();
@@ -14,11 +21,7 @@ pub fn create_include(name: &str) -> String {
     let include: String = fs::read_to_string(include_path).unwrap_or_default();
     include
 }
-pub fn generate_html(
-    source_file: &Path,
-    constants: &Constants,
-) {
-    
+pub fn generate_html(source_file: &Path, constants: &Constants) {
     let relative = match source_file.strip_prefix(&constants.opt.source) {
         Ok(path) => path,
         Err(_) => {
