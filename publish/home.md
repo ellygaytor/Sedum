@@ -26,7 +26,8 @@ You must have rust and cargo installed and available on the path.
   - `author`
   - `list` ('True' or 'False')
 #### Generation
-1. Run `cargo run [source] [result]`, setting the source directory and the directory you want the generated files to be placed in
+1. Run `cargo run [source] [result]`, setting the source directory and the directory you want the generated files to be placed in.
+
 
 ### Netlify
 
@@ -43,3 +44,8 @@ You must have rust and cargo installed and available on the path.
 #### Generation
 1. Place your markdown files in `[source]` that you set in step one of setup
 2. Push the changes, and Netlify will automatically download the latest version of Sedum, and generate the files.
+
+#### Options:
+|Option|Usage|Description|
+|:----|:----|:----|
+|`-t` or `—timestamp`|`… -t …`|Add a timestamp in a comment to the generated HTML|
