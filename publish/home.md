@@ -1,8 +1,6 @@
 ---
-title: Sedum
 description: Static site generator written in Rust
 language: en
-author: ellygaytor
 ---
 
 ![cover](https://user-images.githubusercontent.com/33349740/135699024-5e643074-e58e-4b9a-bbaf-2ea1501b3ff6.png)
