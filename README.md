@@ -22,11 +22,22 @@ You must have rust and cargo installed and available on the path.
   - `list` ('True' or 'False') [Optional]
 #### Generation
 1. Run `cargo run [source] [result]`, setting the source directory and the directory you want the generated files to be placed in
+1.1 Add options:
+
+    |Option|Usage|Description|
+    |:----|:----|:----|
+    |`-t` or `—timestamp`|`… -t …`|Add a timestamp in a comment to the generated HTML|
+
 
 ### Netlify
 
 #### Setup
 1. Set your build command to `wget -N https://github.com/ellygaytor/Sedum/releases/latest/download/sedum && chmod +x sedum && ./sedum [source] [result]`, setting the source directory and the directory you want the generated files to be placed in.
+1.1 Add options:
+
+    |Option|Usage|Description|
+    |:----|:----|:----|
+    |`-t` or `—timestamp`|`… -t …`|Add a timestamp in a comment to the generated HTML|
 2. Set your publish directory to `[result]` that you chose in step one.
 3. Prepend the appropriate yaml to your markdown files (prepending and appending `---`):
   - `title`
