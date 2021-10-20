@@ -1,7 +1,6 @@
 ---
 description: Static site generator written in Rust
 language: en
-author: ellygaytor
 ---
 
 ![cover](https://user-images.githubusercontent.com/33349740/135699024-5e643074-e58e-4b9a-bbaf-2ea1501b3ff6.png)
@@ -20,12 +19,12 @@ You must have rust and cargo installed and available on the path.
 
 #### Setup
 1. Run `git clone https://github.com/ellygaytor/Sedum.git`
-2. Prepend the appropriate yaml to your markdown files (prepending and appending `---`):
+2. Prepend the appropriate yaml to your markdown files (prepending and appending `---`) (optional):
   - `title`
   - `description`
   - `language`
   - `author`
-  - `list` ('True' or 'False') [Optional]
+  - `list` ('True' or 'False')
 #### Generation
 1. Run `cargo run [source] [result]`, setting the source directory and the directory you want the generated files to be placed in
 
@@ -34,12 +33,12 @@ You must have rust and cargo installed and available on the path.
 #### Setup
 1. Set your build command to `wget -N https://github.com/ellygaytor/Sedum/releases/latest/download/sedum && chmod +x sedum && ./sedum [source] [result]`, setting the source directory and the directory you want the generated files to be placed in.
 2. Set your publish directory to `[result]` that you chose in step one.
-3. Prepend the appropriate yaml to your markdown files (prepending and appending `---`):
+3. Prepend the appropriate yaml to your markdown files (prepending and appending `---`) (optional):
   - `title`
   - `description`
   - `language`
   - `author`
-  - `list` ('True' or 'False') [Optional]
+  - `list` ('True' or 'False')
 
 #### Generation
 1. Place your markdown files in `[source]` that you set in step one of setup
