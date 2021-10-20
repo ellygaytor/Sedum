@@ -1,7 +1,7 @@
 [build]
     command = 'wget -N https://github.com/ellygaytor/Sedum/releases/latest/download/sedum && chmod +x sedum && ./sedum publish results -t'
 
-    publish = results
+    publish = 'results'
     
 [[plugins]]
 package = "netlify-plugin-inline-critical-css"
