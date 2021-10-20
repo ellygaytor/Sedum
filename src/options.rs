@@ -20,4 +20,7 @@ pub struct Opt {
         parse(from_os_str)
     )]
     pub destination: PathBuf,
+
+    #[structopt(short="t", long="timestamp")]
+    pub timestamp: bool,
 }
