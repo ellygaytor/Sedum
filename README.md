@@ -14,12 +14,12 @@ You must have rust and cargo installed and available on the path.
 
 #### Setup
 1. Run `git clone https://github.com/ellygaytor/Sedum.git`
-2. Prepend the appropriate yaml to your markdown files (prepending and appending `---`):
+2. Prepend the appropriate yaml to your markdown files (prepending and appending `---`) (optional):
   - `title`
   - `description`
   - `language`
   - `author`
-  - `list` ('True' or 'False') [Optional]
+  - `list` ('True' or 'False')
 #### Generation
 1. Run `cargo run [source] [result]`, setting the source directory and the directory you want the generated files to be placed in
 1.1 Add options:
@@ -39,12 +39,12 @@ You must have rust and cargo installed and available on the path.
     |:----|:----|:----|
     |`-t` or `—timestamp`|`… -t …`|Add a timestamp in a comment to the generated HTML|
 2. Set your publish directory to `[result]` that you chose in step one.
-3. Prepend the appropriate yaml to your markdown files (prepending and appending `---`):
+3. Prepend the appropriate yaml to your markdown files (prepending and appending `---`) (optional):
   - `title`
   - `description`
   - `language`
   - `author`
-  - `list` ('True' or 'False') [Optional]
+  - `list` ('True' or 'False')
 
 #### Generation
 1. Place your markdown files in `[source]` that you set in step one of setup
