@@ -69,6 +69,7 @@ You must have rust and cargo installed and available on the path.
 
 ## Settings File:
 The settings file is placed in the source directory, and uses YAML.
+
 |Usage|Description|
 |:----|:----|
 |`default_author`|The default author to be used if not set in the page options|
