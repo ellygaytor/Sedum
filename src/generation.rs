@@ -91,6 +91,7 @@ pub fn generate_html(source_file: &Path, constants: &Constants) {
     } else {
         page = str::replace(&page, "|LIST|", &constants.list_html);
     }
+    page = str::replace(&page, "|TIMESTAMP|", format!("{}",chrono::offset::Utc::now()).as_str());
     let prefix = &target.parent().unwrap();
     fs::create_dir_all(prefix).unwrap();
     target.set_extension("html");
