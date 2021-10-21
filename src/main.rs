@@ -1,3 +1,5 @@
+#![forbid(unsafe_code)]
+
 use crate::structs::Constants;
 use pulldown_cmark::Options;
 use structopt::StructOpt;
