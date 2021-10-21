@@ -18,8 +18,7 @@ use chrono::Datelike;
 pub fn create_include(name: &str) -> String {
     let opt = options::Opt::from_args();
     let mut include_path = opt.source;
-    include_path.push(name);
-    include_path.push(".include");
+    include_path.push(format!("{}.include",name));
     let include: String = fs::read_to_string(include_path).unwrap_or_default();
     include
 }
