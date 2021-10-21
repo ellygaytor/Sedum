@@ -56,5 +56,5 @@ You must have rust and cargo installed and available on the path.
 ## Dynamic Replace:
 |Usage|Description|
 |:----|:----|
-|`|LIST|`|Insert a HTML list of files with `list` enabled|
-|`|TIMESTAMP|`|Insert a UTC timestamp|
+|`\|LIST\|`|Insert a HTML list of files with `list` enabled|
+|`\|TIMESTAMP\|`|Insert a UTC timestamp|
