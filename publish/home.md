@@ -59,3 +59,16 @@ You must have rust and cargo installed and available on the path.
 |Option|Usage|Description|
 |:----|:----|:----|
 |`-t` or `—timestamp`|`… -t …`|Add a timestamp in a comment to the generated HTML|
+
+## Dynamic Replace:
+|Usage|Description|
+|:----|:----|
+|`\|LIST\|`|Insert a HTML list of files with `list` enabled|
+|`\|TIMESTAMP\|`|Insert a UTC timestamp|
+|`\|COPYRIGHT\|`|Insert a copyright notice for the author of the page or the default author in `settings`.|
+
+## Settings File:
+The settings file is placed in the source directory, and uses YAML.
+|Usage|Description|
+|:----|:----|
+|`default_author`|The default author to be used if not set in the page options|
