@@ -73,7 +73,7 @@ pub fn list_files(source_files: &[PathBuf]) -> (String, i64) {
                 list_html = format!(
                     "{}<li><a href='{}'>{}</a></li>",
                     list_html,
-                    relative.display(),
+                    relative.with_extension("html").display(),
                     title_string
                 );
                 list_count += 1;
