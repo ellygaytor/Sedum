@@ -12,12 +12,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Install cargo-chef
-        run: cargo install cargo-chef --locked
-      - name: Create recipe
-        run: cargo chef prepare --recipe-path recipe.json
       - name: Build project
-        run: cargo chef cook --release --recipe-path recipe.json
+        run: cargo build --release --locked
       - name: Bump version and push tag/create release point
         uses: anothrNick/github-tag-action@1.17.2
         env:
