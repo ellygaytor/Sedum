@@ -10,7 +10,7 @@ use structopt::StructOpt;
 
 use crate::{
     options::{self},
-    structs::{Constants, Page},
+    structs::{Constants, Page, PageUnwrapped},
 };
 
 use chrono::Datelike;
@@ -23,6 +23,19 @@ pub fn create_include(name: &str) -> String {
     let include: String = fs::read_to_string(include_path).unwrap_or_default();
     include
 }
+
+fn dynamic_replace(page: String, constants: &Constants, page_unwrapped: &PageUnwrapped) -> String {
+    let mut page: String = page;
+    if constants.list_count == 0 {
+        page = str::replace(&page, "|LIST|", "");
+    } else {
+        page = str::replace(&page, "|LIST|", &constants.list_html);
+    }
+    page = str::replace(&page, "|TIMESTAMP|", format!("{}",chrono::offset::Utc::now()).as_str());
+    page = str::replace(&page, "|COPYRIGHT|", format!("© {} {}",chrono::offset::Utc::now().year(), page_unwrapped.author_string).as_str());
+    page
+}
+
 pub fn generate_html(source_file: &Path, constants: &Constants) {
     let relative = if let Ok(path) = source_file.strip_prefix(&constants.opt.source) {
         path
@@ -60,40 +73,36 @@ pub fn generate_html(source_file: &Path, constants: &Constants) {
     let parser = Parser::new_ext(content, constants.pulldown_cmark_options);
     let mut html_content = String::new();
     html::push_html(&mut html_content, parser);
-    let lang_string: String = match settings.language {
-        None => String::from(""),
-        Some(lang) => format!(" lang='{}'", lang),
+    let page_unwrapped = PageUnwrapped {
+        lang_string: match settings.language {
+            None => String::from(""),
+            Some(lang) => format!(" lang='{}'", lang),
+        },
+        title_string: match settings.title {
+            None => String::from(
+                source_file
+                    .file_stem()
+                    .unwrap_or_default()
+                    .to_str()
+                    .unwrap_or_default(),
+            ),
+            Some(title) => title,
+        },
+        description_string: match settings.description {
+            None => String::from(""),
+            Some(description) => format!("<meta name='description' content='{}'>", description),
+        },
+        author_string: match settings.author {
+            None => String::from(&constants.global_settings.default_author),
+            Some(author) => author,
+        },
+        timestamp_string: match &constants.opt.timestamp {
+            true => format!("\n<!--\nGenerated on {}.\n-->\n", chrono::offset::Utc::now()),
+            false => String::new(),
+        }
     };
-    let title_string: String = match settings.title {
-        None => String::from(
-            source_file
-                .file_stem()
-                .unwrap_or_default()
-                .to_str()
-                .unwrap_or_default(),
-        ),
-        Some(title) => title,
-    };
-    let description_string = match settings.description {
-        None => String::from(""),
-        Some(description) => format!("<meta name='description' content='{}'>", description),
-    };
-    let author_string = match settings.author {
-        None => String::from(&constants.global_settings.default_author),
-        Some(author) => author,
-    };
-    let timestamp_string = match &constants.opt.timestamp {
-        true => format!("\n<!--\nGenerated on {}.\n-->\n", chrono::offset::Utc::now()),
-        false => String::new(),
-    };
-    let mut page = format!("<!DOCTYPE html>\n<html{}>{}{}<head>\n<meta charset='utf-8'>\n<title>{}</title>\n{}\n<meta name='author' content='{}'>\n<meta name='viewport' content='width=device-width, initial-scale=1'>\n<link rel='stylesheet' href='/main.css'>\n</head>\n<body>\n{}\n{}</body>\n</html>", lang_string, constants.head_include, timestamp_string, &title_string, description_string, author_string, html_content, constants.body_include);
-    if constants.list_count == 0 {
-        page = str::replace(&page, "|LIST|", "");
-    } else {
-        page = str::replace(&page, "|LIST|", &constants.list_html);
-    }
-    page = str::replace(&page, "|TIMESTAMP|", format!("{}",chrono::offset::Utc::now()).as_str());
-    page = str::replace(&page, "|COPYRIGHT|", format!("© {} {}",chrono::offset::Utc::now().year(), author_string).as_str());
+    let mut page = format!("<!DOCTYPE html>\n<html{}>{}{}<head>\n<meta charset='utf-8'>\n<title>{}</title>\n{}\n<meta name='author' content='{}'>\n<meta name='viewport' content='width=device-width, initial-scale=1'>\n<link rel='stylesheet' href='/main.css'>\n</head>\n<body>\n{}\n{}</body>\n</html>", page_unwrapped.lang_string, constants.head_include, page_unwrapped.timestamp_string, &page_unwrapped.title_string, page_unwrapped.description_string, page_unwrapped.author_string, html_content, constants.body_include);
+    page = dynamic_replace(page, constants, &page_unwrapped);
     let prefix = &target.parent().unwrap();
     fs::create_dir_all(prefix).unwrap();
     target.set_extension("html");

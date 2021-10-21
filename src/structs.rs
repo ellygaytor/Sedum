@@ -44,3 +44,11 @@ pub struct Constants {
     pub pulldown_cmark_options: Options,
     pub global_settings: Settings,
 }
+
+pub struct PageUnwrapped {
+    pub lang_string: String,
+    pub title_string: String,
+    pub description_string: String,
+    pub author_string: String,
+    pub timestamp_string: String,
+}
