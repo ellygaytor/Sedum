@@ -52,3 +52,9 @@ You must have rust and cargo installed and available on the path.
 |Option|Usage|Description|
 |:----|:----|:----|
 |`-t` or `—timestamp`|`… -t …`|Add a timestamp in a comment to the generated HTML|
+
+## Dynamic Replace:
+|Usage|Description|
+|:----|:----|
+|`|LIST|`|Insert a HTML list of files with `list` enabled|
+|`|TIMESTAMP|`|Insert a UTC timestamp|
