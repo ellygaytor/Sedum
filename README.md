@@ -58,3 +58,4 @@ You must have rust and cargo installed and available on the path.
 |:----|:----|
 |`\|LIST\|`|Insert a HTML list of files with `list` enabled|
 |`\|TIMESTAMP\|`|Insert a UTC timestamp|
+|`\|COPYRIGHT\|`|Insert a copyright notice for the author of the page or the default author in `settings`.|

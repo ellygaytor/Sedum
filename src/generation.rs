@@ -7,12 +7,13 @@ use std::{
 use extract_frontmatter::Extractor;
 use pulldown_cmark::{html, Parser};
 use structopt::StructOpt;
-use chrono;
 
 use crate::{
     options::{self},
     structs::{Constants, Page},
 };
+
+use chrono::Datelike;
 
 pub fn create_include(name: &str) -> String {
     let opt = options::Opt::from_args();
@@ -92,6 +93,7 @@ pub fn generate_html(source_file: &Path, constants: &Constants) {
         page = str::replace(&page, "|LIST|", &constants.list_html);
     }
     page = str::replace(&page, "|TIMESTAMP|", format!("{}",chrono::offset::Utc::now()).as_str());
+    page = str::replace(&page, "|COPYRIGHT|", format!("© {} {}",chrono::offset::Utc::now().year(), author_string).as_str());
     let prefix = &target.parent().unwrap();
     fs::create_dir_all(prefix).unwrap();
     target.set_extension("html");
