@@ -1,7 +1,14 @@
 [package]
 name = "sedum"
-version = "0.2.0"
+version = "0.2.46"
 edition = "2018"
+license = "MPL-2.0"
+description = "Sedum is a static website generator."
+homepage = "https://github.com/ellygaytor/Sedum"
+repository = "https://github.com/ellygaytor/Sedum"
+readme = "README.md"
+keywords = ["markdown", "static site generation"]
+categories = ["web-programming"]
 
 [dependencies]
 walkdir = "2.3.2"
