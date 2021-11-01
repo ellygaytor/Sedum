@@ -7,7 +7,7 @@ description = "Sedum is a static website generator."
 homepage = "https://github.com/ellygaytor/Sedum"
 repository = "https://github.com/ellygaytor/Sedum"
 readme = "README.md"
-keywords = ["markdown", "static site generation"]
+keywords = ["markdown"]
 categories = ["web-programming"]
 
 [dependencies]
