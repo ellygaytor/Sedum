@@ -30,7 +30,8 @@ jobs:
         uses: anothrNick/github-tag-action@1.17.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CUSTOM_TAG: v+${{ needs.get_version.outputs.tag }}
+          CUSTOM_TAG: ${{ needs.get_version.outputs.tag }}
+          WITH_V: true
         id: bump_version
       - name: Upload binary to release
         uses: svenstaro/upload-release-action@v1-release
