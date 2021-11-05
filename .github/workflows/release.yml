@@ -10,8 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     name: Get version from cargo.toml
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
       - name: Get version
         id: version
         run: cargo metadata --no-deps --format-version 1 | jq '.packages[0].version'
