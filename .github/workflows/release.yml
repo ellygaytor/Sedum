@@ -14,7 +14,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Get version
         id: version
-        run: cargo metadata --no-deps --format-version 1 | jq '.packages[0].version' -r
+        run: cargo metadata --no-deps --format-version 1 | jq '.packages[0].version'
     outputs:
       tag: ${{ steps.version.outputs }}
   release:
