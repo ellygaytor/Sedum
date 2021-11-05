@@ -6,6 +6,7 @@ use walkdir::WalkDir;
 use crate::{options, structs};
 use crate::structs::{Page, Settings};
 
+/// Copy the passed in file to the target directory
 pub fn copy_file_to_target(path: PathBuf) {
     let opt = options::Opt::from_args();
     let relative = if let Ok(path) = path.strip_prefix(&opt.source) {
@@ -25,6 +26,7 @@ pub fn copy_file_to_target(path: PathBuf) {
     };
 }
 
+/// Create an HTML list of all files in the source directory that have list == True
 pub fn list_files(source_files: &[PathBuf]) -> (String, i64) {
     let opt = options::Opt::from_args();
 
@@ -85,6 +87,7 @@ pub fn list_files(source_files: &[PathBuf]) -> (String, i64) {
     (list_html, list_count)
 }
 
+/// Traverse the source directory and take actions based on each file's extension
 pub fn traverse() -> (Vec<PathBuf>, Settings) {
     let opt = options::Opt::from_args();
 

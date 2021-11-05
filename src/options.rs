@@ -6,7 +6,10 @@ use structopt::StructOpt;
 #[structopt(
     about = "Sedum is a static site generator. Pass in markdown files and it will automatically generate HTML."
 )]
+
+/// The command line options
 pub struct Opt {
+    /// The directory containing the markdown files to be converted to HTML
     #[structopt(
         help = "The directory containing the markdown files to be converted to HTML.",
         default_value = "source",
@@ -14,6 +17,7 @@ pub struct Opt {
     )]
     pub source: PathBuf,
 
+    /// The directory in which to place the HTML. Does not need to exist, Sedum will make it automatically
     #[structopt(
         help = "The directory in which to place the HTML. Does not need to exist, Sedum will make it automatically.",
         default_value = "result",
@@ -21,6 +25,7 @@ pub struct Opt {
     )]
     pub destination: PathBuf,
 
+    /// (Optional) Include a timestamp in all generated HTML
     #[structopt(short="t", long="timestamp")]
     pub timestamp: bool,
 }

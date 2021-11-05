@@ -15,6 +15,7 @@ use crate::{
 
 use chrono::Datelike;
 
+/// Get a string containing the contents of (source directory)/[passed in name].include
 pub fn create_include(name: &str) -> String {
     let opt = options::Opt::from_args();
     let mut include_path = opt.source;
@@ -23,6 +24,7 @@ pub fn create_include(name: &str) -> String {
     include
 }
 
+/// Process dynamic replacements for the passed in HTML
 fn dynamic_replace(page: String, constants: &Constants, page_unwrapped: &PageUnwrapped) -> String {
     let mut page: String = page;
     if constants.list_count == 0 {
@@ -35,6 +37,7 @@ fn dynamic_replace(page: String, constants: &Constants, page_unwrapped: &PageUnw
     page
 }
 
+/// Generate a complete HTML document from the passed in markdown
 pub fn generate_html(source_file: &Path, constants: &Constants) {
     let relative = if let Ok(path) = source_file.strip_prefix(&constants.opt.source) {
         path

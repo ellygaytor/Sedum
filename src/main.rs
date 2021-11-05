@@ -10,6 +10,7 @@ mod options;
 mod structs;
 
 fn main() {
+    //! Generate a series of HTML documents from the files in the source directory, command line options, and a settings file.
     let mut pulldown_cmark_options = Options::empty();
     pulldown_cmark_options.insert(Options::ENABLE_STRIKETHROUGH);
     pulldown_cmark_options.insert(Options::ENABLE_TABLES);
