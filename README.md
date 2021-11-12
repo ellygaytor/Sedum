@@ -49,13 +49,13 @@ You must have rust and cargo installed and available on the path.
 ## Options:
 |Option|Usage|Description|
 |:----|:----|:----|
-|`-t` or `—timestamp`|`… -t …`|Add a timestamp in a comment to the generated HTML|
+|`-t` or `—timestamp`|`… -t …`|Add a timestamp (in seconds since epoch) in a comment to the generated HTML|
 
 ## Dynamic Replace:
 |Usage|Description|
 |:----|:----|
 |`\|LIST\|`|Insert a HTML list of files with `list` enabled|
-|`\|TIMESTAMP\|`|Insert a UTC timestamp|
+|`\|TIMESTAMP\|`|Insert the number of seconds since the epoch|
 |`\|COPYRIGHT\|`|Insert a copyright notice for the author of the page or the default author in `settings`.|
 
 ## Settings File:

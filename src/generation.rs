@@ -13,7 +13,23 @@ use crate::{
     structs::{Constants, Page, PageUnwrapped},
 };
 
-use chrono::Datelike;
+use std::time::{SystemTime};
+
+/// Get the system time in seconds since epoch
+fn get_time() -> u64 {
+    match SystemTime::now().duration_since(SystemTime::UNIX_EPOCH) {
+        Ok(n) => n.as_secs(),
+        Err(_) => panic!("SystemTime before UNIX EPOCH!"),
+    }
+}
+
+/// Get the current year
+fn get_year() -> u64 {
+    let current_time = get_time();
+    let years_since_epoch_unrounded: f64 = (current_time/31556926) as f64;
+    let years_since_epoch = years_since_epoch_unrounded.floor() as u64;
+    years_since_epoch + 1970
+}
 
 /// Get a string containing the contents of (source directory)/[passed in name].include
 pub fn create_include(name: &str) -> String {
@@ -32,8 +48,8 @@ fn dynamic_replace(page: String, constants: &Constants, page_unwrapped: &PageUnw
     } else {
         page = str::replace(&page, "|LIST|", &constants.list_html);
     }
-    page = str::replace(&page, "|TIMESTAMP|", format!("{}",chrono::offset::Utc::now()).as_str());
-    page = str::replace(&page, "|COPYRIGHT|", format!("© {} {}",chrono::offset::Utc::now().year(), page_unwrapped.author_string).as_str());
+    page = str::replace(&page, "|TIMESTAMP|", format!("{}",get_time()).as_str());
+    page = str::replace(&page, "|COPYRIGHT|", format!("© {} {}",get_year(), page_unwrapped.author_string).as_str());
     page
 }
 
@@ -99,7 +115,7 @@ pub fn generate_html(source_file: &Path, constants: &Constants) {
             Some(author) => author,
         },
         timestamp_string: match &constants.opt.timestamp {
-            true => format!("\n<!--\nGenerated on {}.\n-->\n", chrono::offset::Utc::now()),
+            true => format!("\n<!--\nGenerated at {} since epoch.\n-->\n", get_time()),
             false => String::new(),
         }
     };
