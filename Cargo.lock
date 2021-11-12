@@ -56,6 +56,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "56899898ce76aaf4a0f24d914c97ea6ed976d42fec6ad33fcbb0a1103e07b2b0"
 
 [[package]]
+name = "epoch-converter"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "82f36e03049327b02edc7e8224b54cc20cde398e46e99e3f0cc032ff315e9301"
+
+[[package]]
 name = "extract-frontmatter"
 version = "2.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -193,8 +199,9 @@ dependencies = [
 
 [[package]]
 name = "sedum"
-version = "0.2.48"
+version = "0.2.49"
 dependencies = [
+ "epoch-converter",
  "extract-frontmatter",
  "pulldown-cmark",
  "serde",

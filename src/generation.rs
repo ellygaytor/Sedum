@@ -2,6 +2,7 @@ use std::{
     fs::{self, File},
     io::Write,
     path::Path,
+    time::SystemTime
 };
 
 use extract_frontmatter::Extractor;
@@ -13,7 +14,7 @@ use crate::{
     structs::{Constants, Page, PageUnwrapped},
 };
 
-use std::time::{SystemTime};
+use epoch_converter::epoch_units;
 
 /// Get the system time in seconds since epoch
 fn get_time() -> u64 {
@@ -21,14 +22,6 @@ fn get_time() -> u64 {
         Ok(n) => n.as_secs(),
         Err(_) => panic!("SystemTime before UNIX EPOCH!"),
     }
-}
-
-/// Get the current year
-fn get_year() -> u64 {
-    let current_time = get_time();
-    let years_since_epoch_unrounded: f64 = (current_time/31556926) as f64;
-    let years_since_epoch = years_since_epoch_unrounded.floor() as u64;
-    years_since_epoch + 1970
 }
 
 /// Get a string containing the contents of (source directory)/[passed in name].include
@@ -49,7 +42,7 @@ fn dynamic_replace(page: String, constants: &Constants, page_unwrapped: &PageUnw
         page = str::replace(&page, "|LIST|", &constants.list_html);
     }
     page = str::replace(&page, "|TIMESTAMP|", format!("{}",get_time()).as_str());
-    page = str::replace(&page, "|COPYRIGHT|", format!("© {} {}",get_year(), page_unwrapped.author_string).as_str());
+    page = str::replace(&page, "|COPYRIGHT|", format!("© {} {}",epoch_units(get_time()).years, page_unwrapped.author_string).as_str());
     page
 }
 
@@ -115,7 +108,7 @@ pub fn generate_html(source_file: &Path, constants: &Constants) {
             Some(author) => author,
         },
         timestamp_string: match &constants.opt.timestamp {
-            true => format!("\n<!--\nGenerated at {} since epoch.\n-->\n", get_time()),
+            true => format!("\n<!--\nGenerated at {} seconds since epoch.\n-->\n", get_time()),
             false => String::new(),
         }
     };

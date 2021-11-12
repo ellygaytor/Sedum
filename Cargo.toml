@@ -1,6 +1,6 @@
 [package]
 name = "sedum"
-version = "0.2.48"
+version = "0.2.49"
 edition = "2018"
 license = "MPL-2.0"
 description = "Sedum is a static website generator."
@@ -17,6 +17,7 @@ serde = { version = "1.0", features = ["derive"] }
 serde_yaml = "0.8"
 pulldown-cmark = "0.8.0"
 structopt = "0.3.23"
+epoch-converter = "0.1.1"
 
 [profile.release]
 lto = "fat"
