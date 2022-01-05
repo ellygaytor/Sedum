@@ -116,12 +116,13 @@ pub fn generate_html(source_file: &Path, constants: &Constants) {
             None => String::from(&constants.global_settings.default_author),
             Some(author) => author,
         },
-        timestamp_string: match &constants.opt.timestamp {
-            true => format!(
-                "\n<!--\nGenerated at {} seconds since epoch.\n-->\n",
-                get_time()
-            ),
-            false => String::new(),
+        timestamp_string: if &constants.opt.timestamp {
+            format!(
+            "\n<!--\nGenerated at {} seconds since epoch.\n-->\n",
+            get_time()
+        )
+        } else {
+            String::new()
         },
     };
     let mut page = format!("<!DOCTYPE html>\n<html{}>{}{}<head>\n<meta charset='utf-8'>\n<title>{}</title>\n{}\n<meta name='author' content='{}'>\n<meta name='viewport' content='width=device-width, initial-scale=1'>\n<link rel='stylesheet' href='/main.css'>\n</head>\n<body>\n{}\n{}</body>\n</html>", page_unwrapped.lang_string, constants.head_include, page_unwrapped.timestamp_string, &page_unwrapped.title_string, page_unwrapped.description_string, page_unwrapped.author_string, html_content, constants.body_include);
