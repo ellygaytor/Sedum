@@ -3,14 +3,13 @@ use serde::Deserialize;
 
 use crate::options::Opt;
 
-
 /// Information about a specific page; Its title, description, language tag, author, and if list is enabled
 #[derive(Deserialize, Debug)]
 pub struct Page {
     /// The title of the page
     #[serde(default)]
     pub title: Option<String>,
-    /// The description of the page, used for the description metatag 
+    /// The description of the page, used for the description metatag
     #[serde(default)]
     pub description: Option<String>,
     /// The HTML language tag of the page's contents
