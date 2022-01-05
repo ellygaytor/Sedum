@@ -116,7 +116,7 @@ pub fn generate_html(source_file: &Path, constants: &Constants) {
             None => String::from(&constants.global_settings.default_author),
             Some(author) => author,
         },
-        timestamp_string: if &constants.opt.timestamp {
+        timestamp_string: if constants.opt.timestamp {
             format!(
                 "\n<!--\nGenerated at {} seconds since epoch.\n-->\n",
                 get_time()
