@@ -10,7 +10,7 @@ use pulldown_cmark::{html, Parser};
 use structopt::StructOpt;
 
 use crate::{
-    options::{self},
+    options,
     structs::{Constants, Page, PageUnwrapped},
 };
 
