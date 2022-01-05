@@ -118,9 +118,9 @@ pub fn generate_html(source_file: &Path, constants: &Constants) {
         },
         timestamp_string: if &constants.opt.timestamp {
             format!(
-            "\n<!--\nGenerated at {} seconds since epoch.\n-->\n",
-            get_time()
-        )
+                "\n<!--\nGenerated at {} seconds since epoch.\n-->\n",
+                get_time()
+            )
         } else {
             String::new()
         },
