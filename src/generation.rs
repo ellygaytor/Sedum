@@ -2,7 +2,7 @@ use std::{
     fs::{self, File},
     io::Write,
     path::Path,
-    time::SystemTime
+    time::SystemTime,
 };
 
 use extract_frontmatter::Extractor;
@@ -28,7 +28,7 @@ fn get_time() -> u64 {
 pub fn create_include(name: &str) -> String {
     let opt = options::Opt::from_args();
     let mut include_path = opt.source;
-    include_path.push(format!("{}.include",name));
+    include_path.push(format!("{}.include", name));
     let include: String = fs::read_to_string(include_path).unwrap_or_default();
     include
 }
@@ -41,8 +41,17 @@ fn dynamic_replace(page: String, constants: &Constants, page_unwrapped: &PageUnw
     } else {
         page = str::replace(&page, "|LIST|", &constants.list_html);
     }
-    page = str::replace(&page, "|TIMESTAMP|", format!("{}",get_time()).as_str());
-    page = str::replace(&page, "|COPYRIGHT|", format!("© {} {}",epoch_units(get_time()).years, page_unwrapped.author_string).as_str());
+    page = str::replace(&page, "|TIMESTAMP|", format!("{}", get_time()).as_str());
+    page = str::replace(
+        &page,
+        "|COPYRIGHT|",
+        format!(
+            "© {} {}",
+            epoch_units(get_time()).years,
+            page_unwrapped.author_string
+        )
+        .as_str(),
+    );
     page
 }
 
@@ -108,9 +117,12 @@ pub fn generate_html(source_file: &Path, constants: &Constants) {
             Some(author) => author,
         },
         timestamp_string: match &constants.opt.timestamp {
-            true => format!("\n<!--\nGenerated at {} seconds since epoch.\n-->\n", get_time()),
+            true => format!(
+                "\n<!--\nGenerated at {} seconds since epoch.\n-->\n",
+                get_time()
+            ),
             false => String::new(),
-        }
+        },
     };
     let mut page = format!("<!DOCTYPE html>\n<html{}>{}{}<head>\n<meta charset='utf-8'>\n<title>{}</title>\n{}\n<meta name='author' content='{}'>\n<meta name='viewport' content='width=device-width, initial-scale=1'>\n<link rel='stylesheet' href='/main.css'>\n</head>\n<body>\n{}\n{}</body>\n</html>", page_unwrapped.lang_string, constants.head_include, page_unwrapped.timestamp_string, &page_unwrapped.title_string, page_unwrapped.description_string, page_unwrapped.author_string, html_content, constants.body_include);
     page = dynamic_replace(page, constants, &page_unwrapped);

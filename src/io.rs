@@ -3,8 +3,8 @@ use std::{ffi::OsStr, fs, path::PathBuf};
 use structopt::StructOpt;
 use walkdir::WalkDir;
 
-use crate::{options, structs};
 use crate::structs::{Page, Settings};
+use crate::{options, structs};
 
 /// Copy the passed in file to the target directory
 pub fn copy_file_to_target(path: PathBuf) {
