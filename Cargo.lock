@@ -63,9 +63,9 @@ checksum = "82f36e03049327b02edc7e8224b54cc20cde398e46e99e3f0cc032ff315e9301"
 
 [[package]]
 name = "extract-frontmatter"
-version = "2.1.0"
+version = "4.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "30b4c6ac125f7d6663c9bee567645050c9a164c4dbf5689bd5bdf344a1b39356"
+checksum = "a8df79f381ac7f913d37d0353883635e8a2de59bfb991495be2320ae2e15d358"
 
 [[package]]
 name = "getopts"
@@ -199,7 +199,7 @@ dependencies = [
 
 [[package]]
 name = "sedum"
-version = "0.2.49"
+version = "0.2.50"
 dependencies = [
  "epoch-converter",
  "extract-frontmatter",

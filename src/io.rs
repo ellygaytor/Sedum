@@ -1,3 +1,4 @@
+use extract_frontmatter::config::{Modifier, Splitter};
 use extract_frontmatter::Extractor;
 use std::{ffi::OsStr, fs, path::PathBuf};
 use structopt::StructOpt;
@@ -46,10 +47,11 @@ pub fn list_files(source_files: &[PathBuf]) -> (String, i64) {
                 continue;
             }
         };
-        let mut extractor = Extractor::new(&source_contents);
-        extractor.select_by_terminator("---");
-        extractor.strip_prefix("---");
-        let settings_yaml: String = extractor.extract();
+
+        let (settings_yaml, _) = Extractor::new(Splitter::DelimiterLine("---"))
+            .with_modifier(Modifier::StripFirstLine)
+            .extract(&source_contents);
+
         let settings = match serde_yaml::from_str(&settings_yaml) {
             Ok(settings) => (settings),
             Err(_) => Page {
