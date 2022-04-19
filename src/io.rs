@@ -1,5 +1,4 @@
-use extract_frontmatter::config::{Modifier, Splitter};
-use extract_frontmatter::Extractor;
+use extract_frontmatter::{config::Splitter, Extractor};
 use std::{ffi::OsStr, fs, path::PathBuf};
 use structopt::StructOpt;
 use walkdir::WalkDir;
@@ -48,9 +47,8 @@ pub fn list_files(source_files: &[PathBuf]) -> (String, i64) {
             }
         };
 
-        let (settings_yaml, _) = Extractor::new(Splitter::DelimiterLine("---"))
-            .with_modifier(Modifier::StripFirstLine)
-            .extract(&source_contents);
+        let (settings_yaml, _) =
+            Extractor::new(Splitter::EnclosingLines("---")).extract(&source_contents);
 
         let settings = match serde_yaml::from_str(&settings_yaml) {
             Ok(settings) => (settings),

@@ -5,8 +5,7 @@ use std::{
     time::SystemTime,
 };
 
-use extract_frontmatter::config::{Modifier, Splitter};
-use extract_frontmatter::Extractor;
+use extract_frontmatter::{config::Splitter, Extractor};
 use pulldown_cmark::{html, Parser};
 use structopt::StructOpt;
 
@@ -73,9 +72,8 @@ pub fn generate_html(source_file: &Path, constants: &Constants) {
         }
     };
 
-    let (settings_yaml, markdown_content) = Extractor::new(Splitter::DelimiterLine("---"))
-        .with_modifier(Modifier::StripFirstLine)
-        .extract(&source_contents);
+    let (settings_yaml, markdown_content) =
+        Extractor::new(Splitter::EnclosingLines("---")).extract(&source_contents);
 
     let (content, settings) = match serde_yaml::from_str(&settings_yaml) {
         Ok(settings) => (markdown_content.trim(), settings),

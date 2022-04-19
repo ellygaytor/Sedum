@@ -63,9 +63,9 @@ checksum = "82f36e03049327b02edc7e8224b54cc20cde398e46e99e3f0cc032ff315e9301"
 
 [[package]]
 name = "extract-frontmatter"
-version = "4.0.0"
+version = "4.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a8df79f381ac7f913d37d0353883635e8a2de59bfb991495be2320ae2e15d358"
+checksum = "46ed88b524528147d3055c70746165356731a9a688c5ea3260d39a156e6a03ae"
 
 [[package]]
 name = "getopts"
