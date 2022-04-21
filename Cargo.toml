@@ -1,6 +1,6 @@
 [package]
 name = "sedum"
-version = "0.2.50"
+version = "0.2.49"
 edition = "2018"
 license = "MPL-2.0"
 description = "Sedum is a static website generator."
@@ -12,7 +12,7 @@ categories = ["web-programming"]
 
 [dependencies]
 walkdir = "2.3.2"
-extract-frontmatter = "4.1.0"
+extract-frontmatter = "2.1.0"
 serde = { version = "1.0", features = ["derive"] }
 serde_yaml = "0.8"
 pulldown-cmark = "0.8.0"
