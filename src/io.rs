@@ -1,4 +1,4 @@
-use extract_frontmatter::{config::Splitter, Extractor};
+use extract_frontmatter::Extractor;
 use std::{ffi::OsStr, fs, path::PathBuf};
 use structopt::StructOpt;
 use walkdir::WalkDir;
@@ -46,10 +46,10 @@ pub fn list_files(source_files: &[PathBuf]) -> (String, i64) {
                 continue;
             }
         };
-
-        let (settings_yaml, _) =
-            Extractor::new(Splitter::EnclosingLines("---")).extract(&source_contents);
-
+        let mut extractor = Extractor::new(&source_contents);
+        extractor.select_by_terminator("---");
+        extractor.strip_prefix("---");
+        let settings_yaml: String = extractor.extract();
         let settings = match serde_yaml::from_str(&settings_yaml) {
             Ok(settings) => (settings),
             Err(_) => Page {
