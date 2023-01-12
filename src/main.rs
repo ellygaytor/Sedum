@@ -2,7 +2,7 @@
 
 use crate::structs::Constants;
 use pulldown_cmark::Options;
-use clap::StructOpt;
+use clap::Parser;
 
 mod generation;
 mod io;
@@ -19,7 +19,7 @@ fn main() {
     let (list_html, list_count) = io::list_files(&source_files);
     let head_include = generation::create_include("head");
     let body_include = generation::create_include("body");
-    let opt = options::Opt::from_args();
+    let opt = options::Opt::parse();
 
     let constants = Constants {
         list_html,

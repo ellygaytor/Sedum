@@ -6,8 +6,8 @@ use std::{
 };
 
 use extract_frontmatter::{config::Splitter, Extractor};
-use pulldown_cmark::{html, Parser};
-use clap::StructOpt;
+use pulldown_cmark::{html, Parser as PulldownParser};
+use clap::Parser;
 
 use crate::{
     options,
@@ -26,7 +26,7 @@ fn get_time() -> u64 {
 
 /// Get a string containing the contents of (source directory)/[passed in name].include
 pub fn create_include(name: &str) -> String {
-    let opt = options::Opt::from_args();
+    let opt = options::Opt::parse();
     let mut include_path = opt.source;
     include_path.push(format!("{}.include", name));
     let include: String = fs::read_to_string(include_path).unwrap_or_default();
@@ -89,7 +89,7 @@ pub fn generate_html(source_file: &Path, constants: &Constants) {
         ),
     };
 
-    let parser = Parser::new_ext(content, constants.pulldown_cmark_options);
+    let parser = PulldownParser::new_ext(content, constants.pulldown_cmark_options);
     let mut html_content = String::default();
     html::push_html(&mut html_content, parser);
     let page_unwrapped = PageUnwrapped {

@@ -1,6 +1,6 @@
 use extract_frontmatter::{config::Splitter, Extractor};
 use std::{ffi::OsStr, fs, path::PathBuf};
-use clap::StructOpt;
+use clap::Parser;
 use walkdir::WalkDir;
 
 use crate::structs::{Page, Settings};
@@ -8,7 +8,7 @@ use crate::{options, structs};
 
 /// Copy the passed in file to the target directory
 pub fn copy_file_to_target(path: PathBuf) {
-    let opt = options::Opt::from_args();
+    let opt = options::Opt::parse();
     let relative = if let Ok(path) = path.strip_prefix(&opt.source) {
         path
     } else {
@@ -28,7 +28,7 @@ pub fn copy_file_to_target(path: PathBuf) {
 
 /// Create an HTML list of all files in the source directory that have list == True
 pub fn list_files(source_files: &[PathBuf]) -> (String, i64) {
-    let opt = options::Opt::from_args();
+    let opt = options::Opt::parse();
 
     let mut list_html = String::from("<ul>");
     let mut list_count: i64 = 0;
@@ -89,7 +89,7 @@ pub fn list_files(source_files: &[PathBuf]) -> (String, i64) {
 
 /// Traverse the source directory and take actions based on each file's extension
 pub fn traverse() -> (Vec<PathBuf>, Settings) {
-    let opt = options::Opt::from_args();
+    let opt = options::Opt::parse();
 
     let mut source_files: Vec<PathBuf> = Vec::new();
 
