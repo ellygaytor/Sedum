@@ -51,7 +51,7 @@ pub fn list_files(source_files: &[PathBuf]) -> (String, i64) {
         extractor.strip_prefix("---");
         let settings_yaml: String = extractor.extract();
         let settings = match serde_yaml::from_str(&settings_yaml) {
-            Ok(settings) => (settings),
+            Ok(settings) => settings,
             Err(_) => Page {
                 title: None,
                 description: None,
@@ -95,7 +95,7 @@ pub fn traverse() -> (Vec<PathBuf>, Settings) {
 
     let mut global_settings: Settings = structs::Settings::default();
 
-    for entry in WalkDir::new(&opt.source).into_iter().filter_map(|e| e.ok()) {
+    for entry in WalkDir::new(opt.source).into_iter().filter_map(|e| e.ok()) {
         if entry.metadata().unwrap().is_file() {
             match entry.path().extension().and_then(OsStr::to_str) {
                 Some("md") => source_files.push(entry.path().to_path_buf()),
