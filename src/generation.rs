@@ -90,7 +90,7 @@ pub fn generate_html(source_file: &Path, constants: &Constants) {
     };
 
     let parser = Parser::new_ext(content, constants.pulldown_cmark_options);
-    let mut html_content = String::new();
+    let mut html_content = String::default();
     html::push_html(&mut html_content, parser);
     let page_unwrapped = PageUnwrapped {
         lang_string: match settings.language {
@@ -121,7 +121,7 @@ pub fn generate_html(source_file: &Path, constants: &Constants) {
                 get_time()
             )
         } else {
-            String::new()
+            String::default()
         },
     };
     let mut page = format!("<!DOCTYPE html>\n<html{}>{}{}<head>\n<meta charset='utf-8'>\n<title>{}</title>\n{}\n<meta name='author' content='{}'>\n<meta name='viewport' content='width=device-width, initial-scale=1'>\n<link rel='stylesheet' href='/main.css'>\n</head>\n<body>\n{}\n{}</body>\n</html>", page_unwrapped.lang_string, constants.head_include, page_unwrapped.timestamp_string, &page_unwrapped.title_string, page_unwrapped.description_string, page_unwrapped.author_string, html_content, constants.body_include);
