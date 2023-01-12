@@ -1,8 +1,8 @@
 #![forbid(unsafe_code)]
 
 use crate::structs::Constants;
-use pulldown_cmark::Options;
 use clap::StructOpt;
+use pulldown_cmark::Options;
 
 mod generation;
 mod io;
