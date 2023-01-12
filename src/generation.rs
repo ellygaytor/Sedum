@@ -5,9 +5,9 @@ use std::{
     time::SystemTime,
 };
 
+use clap::StructOpt;
 use extract_frontmatter::{config::Splitter, Extractor};
 use pulldown_cmark::{html, Parser};
-use clap::StructOpt;
 
 use crate::{
     options,
