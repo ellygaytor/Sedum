@@ -7,7 +7,7 @@ use std::{
 
 use extract_frontmatter::{config::Splitter, Extractor};
 use pulldown_cmark::{html, Parser};
-use structopt::StructOpt;
+use clap::StructOpt;
 
 use crate::{
     options,

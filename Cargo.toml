@@ -16,7 +16,7 @@ extract-frontmatter = "4.1.0"
 serde = { version = "1.0", features = ["derive"] }
 serde_yaml = "0.9.16"
 pulldown-cmark = "0.9.2"
-structopt = "0.3.23"
+clap = { version = "3.0", features = ["derive"] }
 epoch-converter = "0.1.1"
 
 [profile.release]

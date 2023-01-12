@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-use structopt::StructOpt;
+use clap::StructOpt;
 
 #[derive(StructOpt, Debug)]
 #[structopt(
@@ -26,6 +26,6 @@ pub struct Opt {
     pub destination: PathBuf,
 
     /// (Optional) Include a timestamp in all generated HTML
-    #[structopt(short = "t", long = "timestamp")]
+    #[structopt(short = 't', long = "timestamp")]
     pub timestamp: bool,
 }

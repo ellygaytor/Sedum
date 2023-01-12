@@ -1,6 +1,6 @@
 use extract_frontmatter::{config::Splitter, Extractor};
 use std::{ffi::OsStr, fs, path::PathBuf};
-use structopt::StructOpt;
+use clap::StructOpt;
 use walkdir::WalkDir;
 
 use crate::structs::{Page, Settings};

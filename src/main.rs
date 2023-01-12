@@ -2,7 +2,7 @@
 
 use crate::structs::Constants;
 use pulldown_cmark::Options;
-use structopt::StructOpt;
+use clap::StructOpt;
 
 mod generation;
 mod io;
