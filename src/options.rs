@@ -26,4 +26,8 @@ pub struct Opt {
     /// (Optional) Include a timestamp in all generated HTML
     #[arg(short = 't', long = "timestamp")]
     pub timestamp: bool,
+
+    /// (Optional) Create a file containing metadata about the generation
+    #[arg(short = 'm', long = "metadata")]
+    pub metadata: bool,
 }

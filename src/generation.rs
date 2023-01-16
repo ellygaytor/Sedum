@@ -3,6 +3,7 @@ use std::{
     io::Write,
     path::Path,
     time::SystemTime,
+    env,
 };
 
 use extract_frontmatter::{config::Splitter, Extractor};
@@ -143,3 +144,30 @@ pub fn generate_html(source_file: &Path, constants: &Constants) {
         }
     };
 }
+
+/// If flag specified, generate a metadata file
+/// This file should contain information such as the time and date
+/// The operating system and the version of the program
+/// This file should be in the same directory as the generated HTML
+/// This file should be named metadata.txt
+pub fn generate_metadata(opt: &options::Opt) {
+    if opt.metadata {
+        let mut metadata_path = opt.destination.clone();
+        metadata_path.push("metadata.txt");
+        let mut metadata_file = match File::create(metadata_path) {
+            Ok(metadata_file) => metadata_file,
+            Err(e) => {
+                println!("Could not create metadata file: {}", e);
+                return;
+            }
+        };
+        let metadata = format!(
+            "Generated at {} seconds since epoch. Generated on {} using {} {}.", get_time(), env::consts::OS, env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
+        match write!(&mut metadata_file, "{}", metadata) {
+            Ok(_) => (),
+            Err(e) => {
+                println!("Could not write to metadata file: {}", e);
+            }
+        };
+    }
+} 

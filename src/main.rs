@@ -34,4 +34,8 @@ fn main() {
     for source_file in &source_files {
         generation::generate_html(source_file, &constants);
     }
+
+    if constants.opt.metadata {
+        generation::generate_metadata(&constants.opt);
+    }
 }
