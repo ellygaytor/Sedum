@@ -12,8 +12,18 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Install stable toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+          target: x86_64-unknown-linux-musl
       - name: Build project
-        run: cargo build --release --locked
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release --target x86_64-unknown-linux-musl
       - name: Bump version and push tag/create release point
         uses: anothrNick/github-tag-action@1.61.0
         env:
