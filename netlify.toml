@@ -1,5 +1,5 @@
 [build]
-    command = 'wget -N https://github.com/ellygaytor/Sedum/releases/latest/download/sedum && chmod +x sedum && ./sedum publish results -t'
+    command = 'wget -N https://github.com/ellygaytor/Sedum/releases/latest/download/sedum && chmod +x sedum && ./sedum publish results -t -m'
 
     publish = 'results'
     
