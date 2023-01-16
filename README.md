@@ -50,6 +50,7 @@ You must have rust and cargo installed and available on the path.
 |Option|Usage|Description|
 |:----|:----|:----|
 |`-t` or `—timestamp`|`… -t …`|Add a timestamp (in seconds since epoch) in a comment to the generated HTML|
+|`-m` or `-metadata`|`… -m …`|Generate a metadata file in the target directory that specifies the time at generation, operating system, and version of Sedum|
 
 ## Dynamic Replace:
 |Usage|Description|
