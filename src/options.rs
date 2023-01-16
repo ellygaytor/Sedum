@@ -12,14 +12,14 @@ pub struct Opt {
     /// The directory containing the markdown files to be converted to HTML
     #[arg(
         help = "The directory containing the markdown files to be converted to HTML.",
-        default_value = "source",
+        default_value = "source"
     )]
     pub source: PathBuf,
 
     /// The directory in which to place the HTML. Does not need to exist, Sedum will make it automatically
     #[arg(
         help = "The directory in which to place the HTML. Does not need to exist, Sedum will make it automatically.",
-        default_value = "result",
+        default_value = "result"
     )]
     pub destination: PathBuf,
 

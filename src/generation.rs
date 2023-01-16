@@ -1,14 +1,14 @@
 use std::{
+    env,
     fs::{self, File},
     io::Write,
     path::Path,
     time::SystemTime,
-    env,
 };
 
+use clap::Parser;
 use extract_frontmatter::{config::Splitter, Extractor};
 use pulldown_cmark::{html, Parser as PulldownParser};
-use clap::Parser;
 
 use crate::{
     options,
@@ -162,7 +162,12 @@ pub fn generate_metadata(opt: &options::Opt) {
             }
         };
         let metadata = format!(
-            "Generated at {} seconds since epoch. Generated on {} using {} {}.", get_time(), env::consts::OS, env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
+            "Generated at {} seconds since epoch. Generated on {} using {} {}.",
+            get_time(),
+            env::consts::OS,
+            env!("CARGO_PKG_NAME"),
+            env!("CARGO_PKG_VERSION")
+        );
         match write!(&mut metadata_file, "{}", metadata) {
             Ok(_) => (),
             Err(e) => {
@@ -170,4 +175,4 @@ pub fn generate_metadata(opt: &options::Opt) {
             }
         };
     }
-} 
+}
