@@ -1,6 +1,6 @@
+use clap::Parser;
 use extract_frontmatter::{config::Splitter, Extractor};
 use std::{ffi::OsStr, fs, path::PathBuf};
-use clap::Parser;
 use walkdir::WalkDir;
 
 use crate::structs::{Page, Settings};

@@ -6,9 +6,9 @@ use std::{
     env,
 };
 
+use clap::Parser;
 use extract_frontmatter::{config::Splitter, Extractor};
 use pulldown_cmark::{html, Parser as PulldownParser};
-use clap::Parser;
 
 use crate::{
     options,
